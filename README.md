@@ -8,7 +8,7 @@ Generates tiles from an OSM API v0.6 compatible database and pushes the tiles to
 - tippecanoe
 - node 6 & yarn
 
-** Environment variables ** 
+### environment variables
 Set these in a `.env` file
 
 ```
