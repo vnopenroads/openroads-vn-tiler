@@ -39,13 +39,15 @@ var tags = fs.createReadStream(process.argv[3]).pipe(csv({escape: '`'}))
 // merge the two streams using way_id, and emit geojson
 merge(ways, tags, toKey)
 .pipe(group(toKey))
-.pipe(through.obj(function ({value: wayArr}, _, next) {
+.pipe(through.obj(function ({key: key, value: wayArr}, _, next) {
+  var properties = wayArr[0] && wayArr[0].properties || wayArr[1] && wayArr[1].properties;
+  var coordinates = wayArr[0] && wayArr[0].coordinates || wayArr[1] && wayArr[1].coordinates;
   next(null, {
     type: 'Feature',
-    properties: wayArr[0].properties,
+    properties: properties,
     geometry: {
       type: 'LineString',
-      coordinates: wayArr[1].coordinates
+      coordinates: coordinates
     }
   })
 }))
