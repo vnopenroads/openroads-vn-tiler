@@ -17,7 +17,8 @@ var toKey = function (obj) {
 // a stream of {way_id, coordinates}
 var ways = fs.createReadStream(process.argv[2]).pipe(csv({escape: '`'}))
 .pipe(group(toKey))
-.pipe(through.obj(function ({value:nodeArr}, _, next) {
+.pipe(through.obj(function (kv, _, next) {
+  var nodeArr = kv.value;
   var way_id = nodeArr[0] ? nodeArr[0].way_id : null
   next(null, {
     way_id: way_id,
@@ -28,7 +29,8 @@ var ways = fs.createReadStream(process.argv[2]).pipe(csv({escape: '`'}))
 // a stream of properties object for each way, from its 'tags'
 var tags = fs.createReadStream(process.argv[3]).pipe(csv({escape: '`'}))
 .pipe(group(toKey))
-.pipe(through.obj(function ({value:tagArr}, _, next) {
+.pipe(through.obj(function (kv, _, next) {
+  var tagArr = kv.value;
   var obj = { way_id: tagArr[0] ? tagArr[0].way_id : null, properties: {} }
   tagArr.forEach(function (tag) {
     obj.properties[tag.k] = tag.v
@@ -39,7 +41,8 @@ var tags = fs.createReadStream(process.argv[3]).pipe(csv({escape: '`'}))
 // merge the two streams using way_id, and emit geojson
 merge(ways, tags, toKey)
 .pipe(group(toKey))
-.pipe(through.obj(function ({key: key, value: wayArr}, _, next) {
+.pipe(through.obj(function (kv, _, next) {
+  var wayArr = kv.value;
   var properties = wayArr[0] && wayArr[0].properties || wayArr[1] && wayArr[1].properties;
   var coordinates = wayArr[0] && wayArr[0].coordinates || wayArr[1] && wayArr[1].coordinates;
   next(null, {
