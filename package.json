@@ -9,6 +9,7 @@
     "start": "nf start"
   },
   "dependencies": {
+    "@mapbox/geojson-merge": "^1.0.2",
     "@mapbox/mapbox-tile-copy": "^6.2.1",
     "JSONStream": "^1.3.1",
     "csv-parser": "^1.11.0",

@@ -3,3 +3,4 @@ node_modules
 scripts/.tmp
 network.mbtiles
 .env
+.DS_Store
