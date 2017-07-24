@@ -18,7 +18,16 @@
     "sorted-merge-stream": "^1.0.1",
     "through2": "^2.0.3",
     "tilelive-s3": "4.1.1",
-    "tl": "^0.9.0"
+    "tl": "^0.9.0",
+    "@turf/distance": "^4.5.2",
+    "@turf/helpers": "^4.5.2",
+    "@turf/midpoint": "^4.5.2",
+    "@turf/nearest": "^4.5.2",
+    "bluebird": "^3.5.0",
+    "geodesy": "^1.1.1",
+    "lodash.assign": "^4.2.0",
+    "lodash.includes": "^4.3.0",
+    "lodash.reduce": "^4.6.0"
   },
   "devDependencies": {
     "foreman": "^2.0.0",
