@@ -17,7 +17,8 @@ Promise = require('bluebird');
 let roads = JSON.parse(fs.readFileSync(process.argv[2]).toString())
 
 // group by that slice of property
-
+roads = roads.features.map((road) => {
+  console.log(road.properties);
+})
 // take those sliced groups and group up by larger admin
 
-console.log(roads);
