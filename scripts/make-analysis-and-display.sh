@@ -5,7 +5,6 @@ set -e
 : "${DATABASE_URL:?}"
 : "${AWS_ACCESS_KEY_ID:?}"
 : "${AWS_SECRET_ACCESS_KEY:?}"
-: "${$S3_TEMPLATE:?}"
 : "${MAPBOX_ACCOUNT:?}"
 : "${MAPBOX_ACCESS_TOKEN:?}"
 
@@ -58,5 +57,14 @@ tippecanoe \
 mapbox upload \
     "${MAPBOX_ACCOUNT}.vietnam-conflated" \
     ".tmp/conflated.mbtiles"
+
+echo "Dump un-conflated, by-province data to S3, for public consumption"
+mkdir .tmp/by-province-name
+./to-admin-geojson.js .tmp/network-merged.geojson .tmp/by-province-name
+aws s3 cp \
+    --recursive \
+    .tmp/by-province-name \
+    s3://openroads-vn-dumps/by-province-name \
+    --acl public-read
 
 echo "Finished"

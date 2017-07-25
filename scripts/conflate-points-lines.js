@@ -64,7 +64,7 @@ const getClosestAttributes = (midpoint, possiblePoints) => {
 // subset points to only include those with vpromms ids
 points = points.features.filter((point) =>
   includes(Object.keys(point.properties), 'or_vpromms')
-});
+);
 
 // transform features into lists of lineStrings
 // when feature and points' vromms id match

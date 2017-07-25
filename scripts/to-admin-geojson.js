@@ -11,7 +11,7 @@ var geojsonStream = require('geojson-stream');
 Promise = require('bluebird');
 
 const parser = geojsonStream.parse();
-const mappedSubadmin = JSON.parse(fs.readFileSync('scripts/lib/vietnam-admin.subadmin.json').toString());
+const mappedSubadmin = JSON.parse(fs.readFileSync('lib/vietnam-admin.subadmin.json').toString());
 
 let mappedFeatures = [];
 
@@ -43,7 +43,7 @@ fs.createReadStream(process.argv[2])
       const fc = featureCollection(
         map(mappedFeatures[key], 'feature')
       );
-      const fileName = 'scripts/output/' + mappedFeatures[key][0].admin.replace(' ', '-') + '.geojson';
+      const fileName = `${process.argv[3]}/${mappedFeatures[key][0].admin}.geojson`;
       fs.writeFileSync(fileName, JSON.stringify(fc));
     }).then(() => {
       console.log('end');
