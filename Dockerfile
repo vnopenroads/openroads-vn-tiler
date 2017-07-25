@@ -20,7 +20,8 @@ RUN apt-get install -y postgresql-client
 RUN apt-get install -y libprotobuf-dev protobuf-compiler libsqlite3-dev && git clone https://github.com/mapbox/tippecanoe.git && cd tippecanoe && make && make install
 
 # Get AWS CLI and Mapbox CLI
-RUN apt-get install -y python-pip && pip install awscli mapboxcli
+# The Ubuntu Trusty version of `requests` is insufficient for `mapboxcli` uploads
+RUN apt-get install -y python-pip && pip install --upgrade requests && pip install awscli mapboxcli
 
 # Install node modules
 ENV NPM_CONFIG_LOGLEVEL=warn
