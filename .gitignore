@@ -7,3 +7,4 @@ scripts/.tmp
 scripts/output
 network.mbtiles
 .env
+.DS_Store

@@ -138,5 +138,5 @@ Promise.map(roads.features, (feature) => {
   console.log(features);
   // make it a feature collection and return
   features = featureCollection(features)
-  fs.writeFileSync('output.geojson', JSON.stringify(features));
+  fs.writeFileSync(process.argv[4], JSON.stringify(features));
 });

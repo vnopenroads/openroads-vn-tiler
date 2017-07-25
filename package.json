@@ -9,6 +9,7 @@
     "start": "nf start"
   },
   "dependencies": {
+    "@mapbox/geojson-merge": "^1.0.2",
     "@mapbox/mapbox-tile-copy": "^6.2.1",
     "@turf/distance": "^4.5.2",
     "@turf/helpers": "^4.5.2",
@@ -32,7 +33,6 @@
     "tl": "^0.9.0"
   },
   "devDependencies": {
-    "babyparse": "^0.4.6",
     "foreman": "^2.0.0",
     "mbview": "^1.15.1"
   }
