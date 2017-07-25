@@ -1,6 +1,10 @@
 node_modules
 .tmp
+**/.DS_Store
+**/.*.swo
+**/.*.swp
 scripts/.tmp
+scripts/output
 network.mbtiles
 .env
 .DS_Store
