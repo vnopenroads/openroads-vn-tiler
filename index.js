@@ -9,5 +9,5 @@ function runShellScript (script, callback) {
   });
 }
 
-const whichScript = process.env.WHICH_SCRIPT || 'make-network'
+const whichScript = process.env.WHICH_SCRIPT || 'make-network';
 runShellScript(`./scripts/${whichScript}.sh`);
