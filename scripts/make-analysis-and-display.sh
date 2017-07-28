@@ -17,7 +17,7 @@ cd "${0%/*}"
 
 mkdir -p .tmp
 
-echo "Dumping ways, from $DATABASE_URL"
+echo "Dumping ways from database"
 psql "$DATABASE_URL" < ways.sql
 
 echo "Converting network to GeoJSON"
