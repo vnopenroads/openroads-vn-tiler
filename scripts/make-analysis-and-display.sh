@@ -59,13 +59,15 @@ mapbox upload \
     "${MAPBOX_ACCOUNT}.vietnam-conflated" \
     ".tmp/conflated.mbtiles"
 
+echo "There is currently no analytics processing, but it would be insterted here"
+
 echo "Dump un-conflated, by-province data to S3, for public consumption"
-mkdir .tmp/by-province-name
-./to-admin-geojson.js .tmp/network-merged.geojson .tmp/by-province-name
+mkdir .tmp/by-province-id
+./to-admin-geojson.js .tmp/network-merged.geojson .tmp/by-province-id
 aws s3 cp \
     --recursive \
-    .tmp/by-province-name \
-    "s3://${S3_DUMP_BUCKET}/by-province-name" \
+    .tmp/by-province-id \
+    "s3://${S3_DUMP_BUCKET}/by-province-id" \
     --acl public-read
 
 echo "Successfully finished"
