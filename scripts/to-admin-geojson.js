@@ -11,6 +11,7 @@ var geojsonStream = require('geojson-stream');
 Promise = require('bluebird');
 
 const parser = geojsonStream.parse();
+const mappedSubadmin = JSON.parse(fs.readFileSync('lib/vietnam-admin.subadmin.json').toString());
 
 let mappedFeatures = [];
 
@@ -21,8 +22,13 @@ fs.createReadStream(process.argv[2])
     const rollupObj = {};
     // only push features to mappedFeatures where or_vpromms exist.
     if (feature.properties.or_vpromms) {
-      const adminID = feature.properties.or_vpromms.slice(0, 2);
-      rollupObj['admin'] = adminID;
+      const subCode = feature.properties.or_vpromms.slice(3, 5);
+      let adminCode = mappedSubadmin.filter((mapObj) => {
+        if (mapObj.subCode === subCode) {
+          return mapObj.adminCode;
+        }
+      })[0].adminCode;
+      rollupObj['admin'] = adminCode;
       rollupObj['feature'] = feature;
       mappedFeatures.push(rollupObj);
     }
@@ -33,7 +39,6 @@ fs.createReadStream(process.argv[2])
       return mappedFeature.admin;
     });
     // for each group, write features as feature collection to geojson.
-
     Promise.each(Object.keys(mappedFeatures), (key) => {
       const fc = featureCollection(
         map(mappedFeatures[key], 'feature')
