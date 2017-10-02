@@ -5,7 +5,6 @@
 var includes = require('lodash.includes');
 var reduce = require('lodash.reduce');
 var assign = require('lodash.assign');
-var utm = require('geodesy/utm');
 var distance = require('@turf/distance')
 var nearest = require('@turf/nearest');
 var point = require('@turf/helpers').point;
@@ -17,19 +16,13 @@ Promise = require('bluebird');
 let roads = JSON.parse(fs.readFileSync(process.argv[2]).toString())
 let points = JSON.parse(fs.readFileSync(process.argv[3]).toString());
 
-const pointProperties = ['iri', 'or_width', 'or_class', 'or_surface'];
-
-const utmToWGS84 = (coordinate) => {
-  return utm.parse('48 N ' + coordinate.join(' '))
-  .toLatLonE()
-  .toString('d',10)
-  .split(', ')
-  .map((coord) => {
-    return parseFloat(
-      coord.split('°')[0]
-    )
-  });
-}
+const pointProperties = [
+  'iri',
+  'or_width',
+  'or_class',
+  'or_surface',
+  'or_responsibility'
+];
 
 const getClosestAttributes = (midpoint, possiblePoints) => {
   // get list of attribute objects for nearest point per pointGroup
@@ -69,12 +62,9 @@ const getClosestAttributes = (midpoint, possiblePoints) => {
 }
 
 // subset points to only include those with vpromms ids
-points = points.features.filter((point) => {
-  if (includes(Object.keys(point.properties), 'or_vpromms')) {
-    point.geometry.coordinates = utmToWGS84(point.geometry.coordinates)
-    return point
-  }
-});
+points = points.features.filter((point) =>
+  includes(Object.keys(point.properties), 'or_vpromms')
+);
 
 // transform features into lists of lineStrings
 // when feature and points' vromms id match
@@ -83,9 +73,7 @@ Promise.map(roads.features, (feature) => {
   let coordinates = feature.geometry.coordinates
   coordinates = Array.from(
     new Set(coordinates.map(JSON.stringify)), JSON.parse
-  ).map((coordinates) => {
-    return utmToWGS84(coordinates)
-  })
+  )
   // make the array of coordinates basis for linestrings
   let chunkedPoints = [];
   for (var i = 0; i < coordinates.length - 1; i++) {
@@ -135,8 +123,8 @@ Promise.map(roads.features, (feature) => {
 }).then((features) => {
   // merge each feature's list of features
   features = [].concat.apply([], features);
-  console.log(features);
+  console.log(`Conflation result: ${features.length} features`);
   // make it a feature collection and return
   features = featureCollection(features)
-  fs.writeFileSync('output.geojson', JSON.stringify(features));
+  fs.writeFileSync(process.argv[4], JSON.stringify(features));
 });
