@@ -40,7 +40,7 @@ fs.createReadStream(process.argv[2])
     mappedFeatures = groupBy(mappedFeatures, (mappedFeature) => {
       return mappedFeature.admin;
     });
-    // for each group, write features as csv 
+    // for each group, write features as csv
     Promise.each(Object.keys(mappedFeatures), (key, i) => {
       // map features to the admin area
       let features = map(mappedFeatures[key], 'feature')

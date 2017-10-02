@@ -23,7 +23,6 @@ fs.createReadStream(process.argv[2])
     if (feature.properties.or_vpromms) {
       const adminID = feature.properties.or_vpromms.slice(0, 2);
       rollupObj['admin'] = adminID;
->>>>>>> d3e032927b34708b09bf4c985013d5ad4656d893
       rollupObj['feature'] = feature;
       mappedFeatures.push(rollupObj);
     }
@@ -41,7 +40,6 @@ fs.createReadStream(process.argv[2])
       );
       const fileName = `${process.argv[3]}/${mappedFeatures[key][0].admin}.geojson`;
       fs.writeFileSync(fileName, JSON.stringify(fc));
->>>>>>> d3e032927b34708b09bf4c985013d5ad4656d893
     }).then(() => {
       console.log('end');
     });
