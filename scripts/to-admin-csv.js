@@ -1,5 +1,5 @@
 'use strict';
-// writes road geojsons grouped by admin.
+// writes road csvs grouped by admin.
 
 var map = require('lodash.map');
 var groupBy = require('lodash.groupby');
