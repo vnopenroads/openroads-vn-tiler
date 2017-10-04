@@ -18,4 +18,7 @@ echo "Converting to GeoJSON"
 ./to-geojson.js .tmp/waynodes.csv .tmp/waytags.csv > .tmp/network.geojson
 
 echo "Generating tasks"
-./generate-tasks.js .tmp/network.geojson > .tmp/tasks.json
+./generate-tasks.js .tmp/network.geojson > .tmp/tasks.csv
+
+echo "Replacing tasks table with new tasks"
+cat replace-tasks.sql | psql $DATABASE_URL

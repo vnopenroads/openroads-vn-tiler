@@ -22,16 +22,28 @@ collect(input, function (i) {
   function lookForIntersections (feature) {
     var start = linestring(feature.geometry.coordinates.slice(0, 2))
     var end = linestring(feature.geometry.coordinates.slice(-2, 0))
+    start._id = end._id = feature._id
 
-    var neighbors = match.match(start, THRESHOLD).concat(match.match(end, THRESHOLD))
+    var neighbors = match.match(start, THRESHOLD)
+    .concat(match.match(end, THRESHOLD))
+    .map(c => c[2])
+
     if (neighbors.length) {
-      let ids = neighbors.map(c => c[2])
-      return { way_id: feature._id, neighbors: ids }
+      let ids = neighbors.join(',')
+      return { way_id: feature._id, neighbors: `"{${ids}}"` }
     }
     return null
   }
 
   match.index(network)
   var result = network.features.map(lookForIntersections).filter(Boolean)
-  console.log(JSON.stringify(result))
+
+  var headers = ['way_id', 'neighbors']
+  result.forEach(result => {
+    console.log(headers.map(h => result[h]).join(','))
+  })
 })
+
+function dblQuote (s) {
+  return " + s + "
+}
