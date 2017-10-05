@@ -64,6 +64,7 @@ echo "There is currently no analytics processing, but it would be insterted here
 echo "Dump un-conflated, by-province data to S3, for public consumption"
 mkdir .tmp/by-province-id
 ./to-admin-geojson.js .tmp/network-merged.geojson .tmp/by-province-id
+./to-admin-csv.js .tmp/network-merged.geojson .tmp/by-province-id
 aws s3 cp \
     --recursive \
     .tmp/by-province-id \
