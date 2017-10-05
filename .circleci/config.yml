@@ -33,7 +33,9 @@ jobs:
           name: Deploy
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              VERSION=$(grep -m1 version package.json | awk -F: '{ print $2 }' | sed 's/[", ]//g')
+              IMGNAME=developmentseed/openroads-vn-tiler:$VERSION
               docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-              docker tag project:latest developmentseed/openroads-vn-tiler:latest
-              docker push developmentseed/openroads-vn-tiler:latest
+              docker tag project:latest $IMGNAME
+              docker push $IMGNAME
             fi
