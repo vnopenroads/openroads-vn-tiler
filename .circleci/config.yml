@@ -4,6 +4,8 @@ jobs:
   build:
     docker:
       - image: docker:17.05.0-ce-git
+        environment:
+          IMGNAME=developmentseed/openroads-vn-tiler
     working_dir: ~/project
     steps:
       - restore_cache:
@@ -24,18 +26,17 @@ jobs:
             docker load -i ~/project.tar | true
       - run:
           name: Build docker image
-          command: docker build -t project:latest .
+          command: docker build --cache-from=project -t $IMGNAME:latest .
       - run:
           name: Save Docker image layer cache
           command: |
-            docker save -o ~/project.tar project:latest
+            docker save -o ~/project.tar $IMGNAME:latest
       - run:
           name: Deploy
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               VERSION=$(grep -m1 version package.json | awk -F: '{ print $2 }' | sed 's/[", ]//g')
-              IMGNAME=developmentseed/openroads-vn-tiler:$VERSION
               docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-              docker tag project:latest $IMGNAME
+              docker tag $IMGNAME:latest $IMGNAME:$VERSION
               docker push $IMGNAME
             fi

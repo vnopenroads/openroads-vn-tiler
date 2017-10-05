@@ -21,7 +21,7 @@ psql "$DATABASE_URL" < ways.sql
 
 echo "Converting network to GeoJSON"
 mkdir .tmp/network
-./to-geojson.js .tmp/waynodes.csv .tmp/waytags.csv > .tmp/network.geojson
+./to-geojson.js .tmp/waynodes.csv .tmp/waytags.csv .tmp/road_properties.csv > .tmp/network.geojson
 split --lines 1 .tmp/network.geojson ".tmp/network/"
 ../node_modules/.bin/geojson-merge \
     .tmp/network/* \
