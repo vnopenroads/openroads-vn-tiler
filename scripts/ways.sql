@@ -15,8 +15,23 @@ BEGIN;
     WHERE w.visible IS TRUE
     ORDER BY way_id;
 
+  CREATE TEMP VIEW point_features AS
+    SELECT JSONB_BUILD_OBJECT(
+      'type', 'Feature',
+      'geometry', ST_ASGEOJSON(geom)::JSONB,
+      'properties', properties
+    ) AS feature
+    FROM point_properties;
+  CREATE TEMP VIEW point_featurecollection AS
+    SELECT JSONB_BUILD_OBJECT (
+      'type', 'FeatureCollection',
+      'features', JSONB_AGG(feature)
+    )
+    FROM point_features;
+
 
 \copy (SELECT * FROM all_waynodes) to .tmp/waynodes.csv CSV HEADER
 \copy (SELECT * FROM all_waytags) to .tmp/waytags.csv CSV HEADER
+\copy (SELECT * FROM point_featurecollection) to .tmp/points.geojson
 
 COMMIT;
