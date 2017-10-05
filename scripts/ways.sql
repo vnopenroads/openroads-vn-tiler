@@ -26,7 +26,7 @@ BEGIN;
       SELECT way_id,
         v AS vpromms_id
       FROM current_way_tags
-      WHERE k = 'or_vpromms_id'
+      WHERE k = 'or_vpromms'
     ) AS self ON wt.way_id = self.way_id;
   CREATE TEMP VIEW all_properties AS
     SELECT wt.way_id,
