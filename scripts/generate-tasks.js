@@ -14,6 +14,7 @@ var THRESHOLD = 0.005
 var input = fs.createReadStream(process.argv[2])
 .pipe(ndjson.parse())
 collect(input, function (i) {
+  i.forEach(feature => { feature._id = feature.way_id })
   var network = {
     type: 'FeatureCollection',
     features: i

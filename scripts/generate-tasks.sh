@@ -15,7 +15,7 @@ else
 fi
 
 echo "Converting to GeoJSON"
-./to-geojson.js .tmp/waynodes.csv .tmp/waytags.csv > .tmp/network.geojson
+./to-geojson.js .tmp/waynodes.csv .tmp/waytags.csv .tmp/road_properties.csv > .tmp/network.geojson
 
 echo "Generating tasks"
 ./generate-tasks.js .tmp/network.geojson > .tmp/tasks.csv
