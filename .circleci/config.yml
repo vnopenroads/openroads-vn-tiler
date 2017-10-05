@@ -39,5 +39,4 @@ jobs:
               docker tag project:latest $IMGNAME:latest
               docker tag $IMGNAME:latest $IMGNAME:$VERSION
               docker push $IMGNAME:latest $IMGNAME:$VERSION
-              docker push $IMGNAME
             fi
