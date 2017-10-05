@@ -22,7 +22,7 @@ collect(input, function (i) {
   function lookForIntersections (feature) {
     var start = linestring(feature.geometry.coordinates.slice(0, 2))
     var end = linestring(feature.geometry.coordinates.slice(-2, 0))
-    start._id = end._id = feature._id
+    start._id = end._id = feature.way_id
 
     var neighbors = match.match(start, THRESHOLD)
     .concat(match.match(end, THRESHOLD))
@@ -30,7 +30,7 @@ collect(input, function (i) {
 
     if (neighbors.length) {
       let ids = neighbors.join(',')
-      return { way_id: feature._id, neighbors: `"{${ids}}"` }
+      return { way_id: feature.way_id, neighbors: `"{${ids}}"` }
     }
     return null
   }
