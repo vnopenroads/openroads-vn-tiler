@@ -26,11 +26,14 @@
     "lodash.map": "^4.6.0",
     "lodash.reduce": "^4.6.0",
     "mbtiles": "^0.9.0",
+    "networkmatch": "https://github.com/dereklieu/networkmatch.git#master",
     "reproject": "^1.1.1",
     "sorted-merge-stream": "^1.0.1",
+    "stream-collect": "^1.3.1",
     "through2": "^2.0.3",
     "tilelive-s3": "4.1.1",
-    "tl": "^0.9.0"
+    "tl": "^0.9.0",
+    "turf-linestring": "^1.0.2"
   },
   "devDependencies": {
     "foreman": "^2.0.0",

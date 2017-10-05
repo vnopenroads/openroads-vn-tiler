@@ -48,9 +48,6 @@ echo "Conflate point data's core OR attributes onto network lines"
     .tmp/points-wgs84.geojson \
     .tmp/conflated.geojson
 
-echo "Run analytics on output, and update database"
-# ADD ANALYTICS CODE
-
 echo "Convert to vector tiles, and upload to Mapbox"
 tippecanoe \
     --layer "conflated" \
