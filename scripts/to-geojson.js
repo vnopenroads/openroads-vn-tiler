@@ -48,7 +48,7 @@ merge(ways, tags, toKey)
   next(null, {
     type: 'Feature',
     properties: properties,
-    _id: wayArr[0].way_id,
+    way_id: wayArr[0].way_id,
     geometry: {
       type: 'LineString',
       coordinates: coordinates
