@@ -34,8 +34,10 @@ jobs:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               VERSION=$(grep -m1 version package.json | awk -F: '{ print $2 }' | sed 's/[", ]//g')
-              IMGNAME=developmentseed/openroads-vn-tiler:$VERSION
+              IMGNAME=developmentseed/openroads-vn-tiler
               docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-              docker tag project:latest $IMGNAME
+              docker tag project:latest $IMGNAME:latest
+              docker tag $IMGNAME:latest $IMGNAME:$VERSION
+              docker push $IMGNAME:latest $IMGNAME:$VERSION
               docker push $IMGNAME
             fi
