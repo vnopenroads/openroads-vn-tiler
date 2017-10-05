@@ -19,7 +19,7 @@ BEGIN;
     SELECT JSONB_BUILD_OBJECT(
       'type', 'Feature',
       'geometry', ST_ASGEOJSON(geom)::JSONB,
-      'properties', properties
+      'properties', properties || JSONB_BUILD_OBJECT('or_vpromms', road_id)
     ) AS feature
     FROM point_properties;
   CREATE TEMP VIEW point_featurecollection AS
