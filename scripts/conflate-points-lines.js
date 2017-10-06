@@ -14,14 +14,13 @@ var fs = require('fs');
 Promise = require('bluebird');
 
 let roads = JSON.parse(fs.readFileSync(process.argv[2]).toString())
-let points = JSON.parse(fs.readFileSync(process.argv[3]).toString());
+let points = JSON.parse(fs.readFileSync(process.argv[3], 'utf-8'));
 
 const pointProperties = [
   'iri',
   'or_width',
   'or_class',
-  'or_surface',
-  'or_responsibility'
+  'or_surface'
 ];
 
 const getClosestAttributes = (midpoint, possiblePoints) => {
