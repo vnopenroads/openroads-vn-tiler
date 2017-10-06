@@ -7,10 +7,9 @@ echo "Ensure the necessary environment variables are set"
 : "${AWS_ACCESS_KEY_ID:?}"
 : "${AWS_SECRET_ACCESS_KEY:?}"
 : "${MAPBOX_ACCESS_TOKEN:?}"
+: "${MAPBOX_ACCOUNT:?}"
 # Paths
 : "${S3_DUMP_BUCKET:?}"
-: "${S3_PROPERTIES_BUCKET:?}"
-: "${MAPBOX_ACCOUNT:?}"
 
 # Change to script's directory
 cd "${0%/*}"
@@ -22,7 +21,7 @@ echo "Run analytics calculations"
 psql "$DATABASE_URL" < calculate-iri-summary-stats.sql
 psql "$DATABASE_URL" < calculate-lengths.sql
 
-echo "Dumping ways from database"
+echo "Dumping ways and properties from database"
 psql "$DATABASE_URL" < ways.sql
 
 echo "Converting network to GeoJSON"
@@ -33,24 +32,10 @@ split --lines 1 .tmp/network.geojson ".tmp/network/"
     .tmp/network/* \
     > .tmp/network-merged.geojson
 
-echo "Get all point-property data from S3"
-mkdir .tmp/points
-aws s3 cp \
-    --recursive --include "*.geojson" \
-    "s3://${S3_PROPERTIES_BUCKET}/points" \
-    .tmp/points
-../node_modules/.bin/geojson-merge \
-    .tmp/points/*.geojson \
-    > .tmp/points.geojson
-../node_modules/.bin/reproject \
-    --use-spatialreference --from EPSG:32648 --to EPSG:4326 \
-    .tmp/points.geojson \
-    > .tmp/points-wgs84.geojson
-
 echo "Conflate point data's core OR attributes onto network lines"
 ./conflate-points-lines.js \
     .tmp/network-merged.geojson \
-    .tmp/points-wgs84.geojson \
+    .tmp/points.geojson \
     .tmp/conflated.geojson
 
 echo "Convert to vector tiles, and upload to Mapbox"
