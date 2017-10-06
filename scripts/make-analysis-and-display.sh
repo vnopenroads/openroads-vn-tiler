@@ -25,7 +25,7 @@ echo "Dumping ways and properties from database"
 psql "$DATABASE_URL" < ways.sql
 
 echo "Converting network to GeoJSON"
-mkdir .tmp/network
+mkdir -p .tmp/network
 ./to-geojson.js .tmp/waynodes.csv .tmp/waytags.csv .tmp/road_properties.csv > .tmp/network.geojson
 split --lines 1 .tmp/network.geojson ".tmp/network/"
 ../node_modules/.bin/geojson-merge \
@@ -50,12 +50,14 @@ mapbox upload \
     ".tmp/conflated.mbtiles"
 
 echo "Dump un-conflated, by-province data to S3, for public consumption"
-mkdir .tmp/by-province-id
+mkdir -p .tmp/by-province-id
 ./to-admin-csv.js .tmp/network-merged.geojson .tmp/by-province-id
 aws s3 cp \
     --recursive \
     .tmp/by-province-id \
     "s3://${S3_DUMP_BUCKET}/by-province-id" \
     --acl public-read
+
+rm -rf .tmp
 
 echo "Successfully finished"
