@@ -38,8 +38,30 @@ var tags = fs.createReadStream(process.argv[3]).pipe(csv({escape: '`'}))
   next(null, obj)
 }))
 
-// merge the two streams using way_id, and emit geojson
-merge(ways, tags, toKey)
+// a stream of properties for each way, from its road-id-level properties table
+const properties = fs.createReadStream(process.argv[4])
+  .pipe(csv({escape: '"'}))
+  .pipe(group(toKey))
+  .pipe(through.obj(function (kv, _, next) {
+    const way_id = kv.value[0].way_id
+    const properties = JSON.parse(kv.value[0].road_properties)
+    const obj = {way_id, properties}
+    next(null, obj)
+  }))
+
+const mergedProperties = merge(tags, properties, toKey)
+  .pipe(group(toKey))
+  .pipe(through.obj(function (kv, _, next) {
+    const way_id = kv.value[0].way_id
+    const properties = Object.assign(
+      kv.value[0].properties,
+      kv.value[1].properties
+    )
+    next(null, {way_id, properties})
+  }))
+
+// merge the streams using way_id, and emit geojson
+merge(ways, mergedProperties, toKey)
 .pipe(group(toKey))
 .pipe(through.obj(function (kv, _, next) {
   var wayArr = kv.value;
