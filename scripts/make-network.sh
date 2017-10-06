@@ -3,13 +3,13 @@ set -e
 
 cd "${0%/*}"
 
-WORKDIR=tmp-network
+WORKDIR=make-network.tmp
 mkdir -p $WORKDIR
 
 if [ -n "${DATABASE_URL}" ]; then
   echo "Dumping ways"
   echo $DATABASE_URL
-  cat ways.sql | psql $DATABASE_URL
+  cat ways.sql | sed -e 's/.tmp/'"$WORKDIR"'/g' ways.sql | psql $DATABASE_URL
 else
   echo "environment variable DATABASE_URL is not defined"
   exit 1;
