@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 'use strict';
 // writes road csvs grouped by admin.
 
