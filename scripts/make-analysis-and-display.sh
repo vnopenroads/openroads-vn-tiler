@@ -16,6 +16,11 @@ cd "${0%/*}"
 
 mkdir -p .tmp
 
+echo "Run analytics calculations"
+# This is the only location in this script where the database is _written to_
+psql "$DATABASE_URL" < calculate-iri-summary-stats.sql
+psql "$DATABASE_URL" < calculate-lengths.sql
+
 echo "Dumping ways and properties from database"
 psql "$DATABASE_URL" < ways.sql
 
@@ -44,11 +49,8 @@ mapbox upload \
     "${MAPBOX_ACCOUNT}.vietnam-conflated" \
     ".tmp/conflated.mbtiles"
 
-echo "There is currently no analytics processing, but it would be insterted here"
-
 echo "Dump un-conflated, by-province data to S3, for public consumption"
 mkdir .tmp/by-province-id
-./to-admin-geojson.js .tmp/network-merged.geojson .tmp/by-province-id
 ./to-admin-csv.js .tmp/network-merged.geojson .tmp/by-province-id
 aws s3 cp \
     --recursive \
