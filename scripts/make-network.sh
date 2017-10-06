@@ -31,4 +31,6 @@ else
   exit 1;
 fi
 
+rm -rf tmp-network
+
 echo "Done"
