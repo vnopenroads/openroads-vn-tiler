@@ -122,6 +122,8 @@ Promise.map(roads.features, (feature) => {
 }).then((features) => {
   // merge each feature's list of features
   features = [].concat.apply([], features);
+  // Iri to number.
+  features.forEach(f => { f.properties.iri = Number(f.properties.iri); })
   console.log(`Conflation result: ${features.length} features`);
   // make it a feature collection and return
   features = featureCollection(features)
