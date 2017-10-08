@@ -52,6 +52,9 @@ const properties = fs.createReadStream(process.argv[4])
 const mergedProperties = merge(tags, properties, toKey)
   .pipe(group(toKey))
   .pipe(through.obj(function (kv, _, next) {
+    // If a road only exists in one of these, then we've probably
+    // hit a database-read race condition; don't save properties
+    if (!kv.value[0] || !kv.value[1]) { return next(null, null); }
     const way_id = kv.value[0].way_id
     const properties = Object.assign(
       kv.value[0].properties,
@@ -65,7 +68,7 @@ merge(ways, mergedProperties, toKey)
 .pipe(group(toKey))
 .pipe(through.obj(function (kv, _, next) {
   var wayArr = kv.value;
-  var properties = wayArr[0] && wayArr[0].properties || wayArr[1] && wayArr[1].properties;
+  var properties = (wayArr[0] && wayArr[0].properties) || (wayArr[1] && wayArr[1].properties) || {};
   var coordinates = wayArr[0] && wayArr[0].coordinates || wayArr[1] && wayArr[1].coordinates;
   next(null, {
     type: 'Feature',
