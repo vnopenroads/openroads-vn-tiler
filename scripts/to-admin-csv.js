@@ -15,7 +15,6 @@ var wkx = require('wkx');
 Promise = require('bluebird');
 
 const parser = geojsonStream.parse();
-const mappedSubadmin = JSON.parse(fs.readFileSync('lib/vietnam-admin.subadmin.json').toString());
 
 let mappedFeatures = [];
 
@@ -26,12 +25,7 @@ fs.createReadStream(process.argv[2])
     const rollupObj = {};
     // only push features to mappedFeatures where or_vpromms exist.
     if (feature.properties.or_vpromms) {
-      const subCode = feature.properties.or_vpromms.slice(3, 5);
-      let adminCode = mappedSubadmin.filter((mapObj) => {
-        if (mapObj.subCode === subCode) {
-          return mapObj.adminCode;
-        }
-      })[0].adminCode;
+      const adminCode = feature.properties.or_vpromms.slice(0, 2);
       rollupObj['admin'] = adminCode;
       rollupObj['feature'] = feature;
       mappedFeatures.push(rollupObj);
@@ -67,8 +61,6 @@ fs.createReadStream(process.argv[2])
       const fileName = `${process.argv[3]}/${mappedFeatures[key][0].admin}.csv`;
       // write the csv to a file
       fs.writeFileSync(fileName, featuresCSV);
-    }).then(() => {
-      console.log('end');
     });
   });
 
