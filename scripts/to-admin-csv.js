@@ -40,7 +40,7 @@ fs.createReadStream(process.argv[2])
       // map features to the admin area
       let features = map(mappedFeatures[key], 'feature')
       // fields used in json2csv
-      let fields = new Set();
+      let fields = new Set(['geometry']);
       // for each feature, return an object with geometry as wkt And that will work with json2csv
       features = features.map(feature => {
         const f = feature.properties;
