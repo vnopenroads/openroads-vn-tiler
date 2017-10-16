@@ -53,12 +53,11 @@ mapbox upload \
 echo "Dump un-conflated, by-province data to S3, for public consumption"
 mkdir -p $WORKDIR/by-province-id
 ./to-admin-csv.js $WORKDIR/network-merged.geojson $WORKDIR/by-province-id
-aws s3 cp \
-    --recursive \
+aws s3 sync \
+    --delete \
+    --acl public-read \
     $WORKDIR/by-province-id \
-    "s3://${S3_DUMP_BUCKET}/by-province-id" \
-    --acl public-read
-
+    "s3://${S3_DUMP_BUCKET}/by-province-id"
 rm -rf $WORKDIR
 
 echo "Successfully finished"
