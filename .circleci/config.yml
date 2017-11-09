@@ -14,6 +14,9 @@ jobs:
             - v0-repo-{{ .Branch }}
             - v0-repo
       - checkout
+      - run:
+          name: Get submodules
+          command: git submodule update --recursive --init
       - save_cache:
           key: v0-repo-{{ .Branch }}-{{ .Revision }}
           paths:
