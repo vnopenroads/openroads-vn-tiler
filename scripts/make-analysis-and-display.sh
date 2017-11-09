@@ -8,8 +8,6 @@ echo "Ensure the necessary environment variables are set"
 : "${AWS_SECRET_ACCESS_KEY:?}"
 : "${MAPBOX_ACCESS_TOKEN:?}"
 : "${MAPBOX_ACCOUNT:?}"
-# Paths
-: "${S3_DUMP_BUCKET:?}"
 
 # Change to script's directory
 cd "${0%/*}"
@@ -23,7 +21,7 @@ psql "$DATABASE_URL" < calculate-iri-summary-stats.sql
 psql "$DATABASE_URL" < calculate-lengths.sql
 
 echo "Dumping ways and properties from database"
-cat ways.sql | sed -e 's/.tmp/'"$WORKDIR"'/g' ways.sql | psql $DATABASE_URL
+cat ways.sql | sed -e 's/.tmp/'"$WORKDIR"'/g' ways.sql | psql "$DATABASE_URL"
 
 echo "Converting network to GeoJSON"
 mkdir -p $WORKDIR/network
@@ -49,15 +47,5 @@ tippecanoe \
 mapbox upload \
     "${MAPBOX_ACCOUNT}.vietnam-conflated" \
     "$WORKDIR/conflated.mbtiles"
-
-echo "Dump un-conflated, by-province data to S3, for public consumption"
-mkdir -p $WORKDIR/by-province-id
-./to-admin-csv.js $WORKDIR/network-merged.geojson $WORKDIR/by-province-id
-aws s3 sync \
-    --delete \
-    --acl public-read \
-    $WORKDIR/by-province-id \
-    "s3://${S3_DUMP_BUCKET}/by-province-id"
-rm -rf $WORKDIR
 
 echo "Successfully finished"
