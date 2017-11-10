@@ -1,6 +1,6 @@
 {
   "name": "openroads-tiler",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Generates render tiles from an OSM API v0.6 DB",
   "main": "index.js",
   "author": "Development Seed <dev@developmentseed.org>",
