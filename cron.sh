@@ -12,4 +12,5 @@ echo '*/5 * * * * . /opt/app/.env; cd /opt/app; ./scripts/make-network.sh >> mak
 (crontab -l; echo '*/5 * * * * . /opt/app/.env; cd /opt/app; ./scripts/make-analysis-and-display.sh >> make-analysis-and-display.log 2>&1') | crontab -
 (crontab -l; echo '*/5 * * * * . /opt/app/.env; cd /opt/app; ./scripts/generate-tasks.sh >> generate-tasks.log 2>&1') | crontab -
 (crontab -l; echo '*/60 * * * * . /opt/app/.env; cd /opt/app; ./scripts/generate-routable-dumps.sh >> generate-routable-dumps.log 2>&1') | crontab -
+(crontab -l; echo '* */24 * * * . /opt/app/.env; cd /opt/app; ./scripts/make-full-backup.sh >> make-full-backup.log 2>&1') | crontab -
 cron start -f
