@@ -36,7 +36,8 @@ RUN apt-get install -y \
 	libblas-dev \
 	liblapack-dev \
 	libatlas-base-dev \
-	gfortran
+	gfortran \
+	zip
 ADD Network_Cleaning/requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
 

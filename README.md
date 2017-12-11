@@ -8,6 +8,7 @@ Generates raster tiles from an OSM-API-v0.6-compatible database and pushes these
 - routable dumps of the road geometries, with some properties attached, by admin area
 - for each road ID in the OSM geometries, calculation of road length and summary statistics for [roughness](https://en.wikipedia.org/wiki/International_Roughness_Index), which get applied back to the database for display on the front-end
 - generation of "tasks" where potential duplicate geometries are detected, or potential intersections
+- a backup of the database's key tables
 
 ## Running locally
 
