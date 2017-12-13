@@ -1,131 +1,73 @@
 #!/usr/bin/env node
 
-// copies closest matching vpproms point's iri value to to linestring.
+// For each two-point segment of `current_ways` roads,
+// find the geographically closest property values from
+// `point_properties`, and attach it
 
-var includes = require('lodash.includes');
-var reduce = require('lodash.reduce');
-var assign = require('lodash.assign');
-var distance = require('@turf/distance')
+const _ = require('lodash');
+var distance = require('@turf/distance');
 var nearest = require('@turf/nearest');
 var point = require('@turf/helpers').point;
 var lineString = require('@turf/helpers').lineString;
 var featureCollection = require('@turf/helpers').featureCollection;
 var fs = require('fs');
-Promise = require('bluebird');
 
-let roads = JSON.parse(fs.readFileSync(process.argv[2]).toString())
+let roads = JSON.parse(fs.readFileSync(process.argv[2], 'utf-8'));
 let points = JSON.parse(fs.readFileSync(process.argv[3], 'utf-8'));
 
-const pointProperties = [
-  'iri',
-  'or_width',
-  'or_class',
-  'or_surface'
+const MAX_METERS_AWAY = 50;
+const POINT_PROPERTIES = [
+  'iri'
 ];
 
-const getClosestAttributes = (midpoint, possiblePoints) => {
-  // get list of attribute objects for nearest point per pointGroup
-  let points = possiblePoints.map((pointGroup) => {
-    const closestPoint = nearest(midpoint, pointGroup);
-    const closestDist = distance(midpoint, closestPoint)
-    closestPoint.properties['distance'] = closestDist;
-    return closestPoint;
-  })
-  let pointAttribs = points.map((point) => {
-    return point.properties
-  })
-  // reduce that list to a single obj.
-  pointAttribs = reduce(pointAttribs, (pointAttribObj, pointAttrib) => {
-    return assign(pointAttribObj, pointAttrib)
-  }, {})
-
-  // replace time with time from closest point, if it exists
-  let closestTime = points.filter((point) => {
-    if (point.properties.time) {
-      return point
-    }
-  })
-  if (closestTime.length >= 1) {
-    if (closestTime.length > 1) {
-      closestTime = closestTime.sort((a, b) => {
-        a.properties.distance - b.properties.distance
-      })
-    }
-    closestTime = closestTime.map((orderedPoints) => {
-      return orderedPoints.properties.time
-    })[0]
-    pointAttribs['time'] = closestTime;
-  }
-  delete pointAttribs['distance'];
-  return pointAttribs;
-}
-
-// subset points to only include those with vpromms ids
-points = points.features.filter((point) =>
-  includes(Object.keys(point.properties), 'or_vpromms')
-);
-
-// transform features into lists of lineStrings
-// when feature and points' vromms id match
-Promise.map(roads.features, (feature) => {
-  // remove duplicate points. this is occurs due to RoadLabs' format
-  let coordinates = feature.geometry.coordinates
-  coordinates = Array.from(
-    new Set(coordinates.map(JSON.stringify)), JSON.parse
+const segments = roads.features.map(f =>
+  lineString(
+    // Remove consecutive identical coordinates from road path
+    f.geometry.coordinates.reduce((acc, val) => {
+      return (!acc.length || !_.isEqual(_.last(acc), val))
+        ? acc.concat([val])
+        : acc;
+    }, []),
+    // Keep only `or_vpromms` road property, for visualization
+    _.pick(f.properties, ['or_vpromms'])
   )
-  // make the array of coordinates basis for linestrings
-  let chunkedPoints = [];
-  for (var i = 0; i < coordinates.length - 1; i++) {
-    chunkedPoints.push([
-      coordinates[i],
-      coordinates[i+1]
-    ]);
-  }
-  // return list of 'possiblePoint' groups only if feature has vpromms id.
-  // points in point groups share the same id as roads.
-  let possiblePoints;
-  if (includes(Object.keys(feature.properties)), 'or_vpromms') {
-    // filter list to only those with vrpomms id that matches feature's
-    possiblePoints = points.filter((point) => {
-      if (point.properties['or_vpromms'] === feature.properties['or_vpromms']) {
-        return point
-      }
-    })
-    possiblePoints = pointProperties.map((property) => {
-      return possiblePoints.filter((point) => {
-        if (includes(Object.keys(point.properties), property)) {
-          return point
-        }
-      })
-    }).filter((features) => {
-      return features.length > 0
-    })
-    if( possiblePoints.length > 0) {
-      possiblePoints = possiblePoints.map((pointGroup) => {
-        return featureCollection(
-          pointGroup
-        )
-      })
+).filter(c =>
+  // Make sure there are enough points to create a line
+  c.geometry.coordinates.length > 1
+).map(c =>
+  // These two-point segments will be the "roads" shown in the vector tiles
+  Array(c.geometry.coordinates.length - 1).fill().reduce((acc, val, idx) => {
+    return acc.concat(
+      lineString(
+        [c.geometry.coordinates[idx], c.geometry.coordinates[idx + 1]],
+        c.properties
+      )
+    );
+  }, [])
+).reduce((acc, val) => {
+  // Handle all two-point segments separately, insted of handling by-road
+  return acc.concat(val);
+}, []).map(s => {
+  const midpoint = point([
+    (s.geometry.coordinates[0][0] + s.geometry.coordinates[1][0]) / 2,
+    (s.geometry.coordinates[0][1] + s.geometry.coordinates[1][1]) / 2
+  ]);
+  const pointProperties = POINT_PROPERTIES.reduce((acc, val) => {
+    // Find and assign the nearest point's value
+    const closest = nearest(
+      midpoint,
+      featureCollection(points.features.filter(p => p.properties[val]))
+    );
+    if (distance(midpoint, closest) * 1000 <= MAX_METERS_AWAY) {
+      acc[val] = closest.properties[val];
     }
-  }
-  // return list of lineStrings that include properties from closest possiblePoints
-  // if there are no possiblePoints, make the lineString 'attributeless'
-  return chunkedPoints.map((pointChunk) => {
-    const yCoords = (pointChunk[0][0] + pointChunk[1][0]) / 2
-    const xCoords = (pointChunk[0][1] + pointChunk[1][1]) / 2
-    const midpoint = point([yCoords, xCoords]);
-    return lineString(
-      pointChunk,
-      possiblePoints.length > 0 ? getClosestAttributes(midpoint, possiblePoints) : {}
-    )
-  })
-}).then((features) => {
-  // merge each feature's list of features
-  features = [].concat.apply([], features);
-  // Iri to number.
-  features.forEach(f => { f.properties.iri = Number(f.properties.iri); })
-  console.log(`Conflation result: ${features.length} features`);
-  // make it a feature collection and return
-  features = featureCollection(features)
-  fs.writeFileSync(process.argv[4], JSON.stringify(features));
+    return acc;
+  }, {});
+  // Also need to coerce any numeric point properties
+  if (pointProperties.iri) { pointProperties.iri = Number(pointProperties.iri); }
+
+  const properties = Object.assign({}, s.properties, pointProperties);
+  return Object.assign(s, {properties});
 });
+
+fs.writeFileSync(process.argv[4], JSON.stringify(featureCollection(segments)));
