@@ -13,8 +13,7 @@ cd ../Network_Cleaning
 
 echo "For each province, generate and upload a routable road dump"
 # For now, just hard-code the fourteen trial provinces
-# This style of fetching roads will be replaced by the January deliverable
-for province_code in "02" "03" "04" "09" "21" "22" "23" "24" "25" "26" "27" "31" "53" "67"
+for province_code in "207" "507" "203" "201" "405" "209" "205" "113" "403" "814" "503" "409" "401" "411"
 do
     echo "Generating routable road dump for province ${province_code}"
     psql "${DATABASE_URL}" -f export-prepped-from-database.sql -v province_code=$province_code
