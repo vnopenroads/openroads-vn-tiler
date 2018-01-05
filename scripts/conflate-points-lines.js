@@ -20,7 +20,14 @@ const POINT_PROPERTIES = [
   'iri'
 ];
 
-const segments = roads.features.map(f =>
+const segments = roads.features.reduce((acc, val) => {
+  // Explode any MultiLineStrings into LineStrings
+  return val.geometry.type === 'LineString'
+    ? acc.concat(val)
+    : acc.concat(val.geometry.coordinates.map(c =>
+      lineString(c, val.properties)
+    ));
+}, []).map(f =>
   lineString(
     // Remove consecutive identical coordinates from road path
     f.geometry.coordinates.reduce((acc, val) => {
