@@ -8,6 +8,7 @@ echo "Ensure the necessary environment variables are set"
 : "${AWS_SECRET_ACCESS_KEY:?}"
 : "${MAPBOX_ACCESS_TOKEN:?}"
 : "${MAPBOX_ACCOUNT:?}"
+: "${S3_DUMP_BUCKET:?}"
 
 # Change to script's directory
 cd "${0%/*}"
@@ -31,9 +32,20 @@ split --lines 1 $WORKDIR/network.geojson "$WORKDIR/network/"
     $WORKDIR/network/* \
     > $WORKDIR/network-merged.geojson
 
+echo "Downloading national highways, which aren't tracked in ORMA"
+aws s3 cp \
+    "s3://$S3_DUMP_BUCKET/private-fixture-data/National_network.geojson" \
+    "$WORKDIR/National_network.geojson"
+
+echo "Merging ORMA roads and national highways into one network file"
+geojson-merge \
+    $WORKDIR/National_network.geojson \
+    $WORKDIR/network-merged.geojson > \
+    $WORKDIR/all-roads.geojson
+
 echo "Conflate point data's core OR attributes onto network lines"
 ./conflate-points-lines.js \
-    $WORKDIR/network-merged.geojson \
+    $WORKDIR/all-roads.geojson \
     $WORKDIR/points.geojson \
     $WORKDIR/conflated.geojson
 
