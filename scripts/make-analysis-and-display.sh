@@ -38,7 +38,7 @@ aws s3 cp \
     "$WORKDIR/National_network.geojson"
 
 echo "Merging ORMA roads and national highways into one network file"
-geojson-merge \
+../node_modules/.bin/geojson-merge \
     $WORKDIR/National_network.geojson \
     $WORKDIR/network-merged.geojson > \
     $WORKDIR/all-roads.geojson
