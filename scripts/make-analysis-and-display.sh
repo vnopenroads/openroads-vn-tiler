@@ -56,7 +56,9 @@ tippecanoe \
     --drop-smallest-as-needed \
     --force --output "$WORKDIR/conflated.mbtiles" \
     "$WORKDIR/conflated.geojson"
-mapbox upload \
+
+export MapboxAccessToken=$MAPBOX_ACCESS_TOKEN
+mapbox-upload \
     "${MAPBOX_ACCOUNT}.vietnam-conflated" \
     "$WORKDIR/conflated.mbtiles"
 
