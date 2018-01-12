@@ -37,17 +37,17 @@ aws s3 cp \
     "s3://$S3_DUMP_BUCKET/private-fixture-data/National_network.geojson" \
     "$WORKDIR/National_network.geojson"
 
-echo "Merging ORMA roads and national highways into one network file"
-../node_modules/.bin/geojson-merge \
-    $WORKDIR/National_network.geojson \
-    $WORKDIR/network-merged.geojson > \
-    $WORKDIR/all-roads.geojson
-
 echo "Conflate point data's core OR attributes onto network lines"
 ./conflate-points-lines.js \
-    $WORKDIR/all-roads.geojson \
+    $WORKDIR/network-merged.geojson \
     $WORKDIR/points.geojson \
     $WORKDIR/conflated.geojson
+
+echo "Merging conflated ORMA roads and national highways into one network file"
+../node_modules/.bin/geojson-merge \
+    $WORKDIR/National_network.geojson \
+    $WORKDIR/conflated.geojson > \
+    $WORKDIR/all-roads.geojson
 
 echo "Convert to vector tiles, and upload to Mapbox"
 tippecanoe \
@@ -55,7 +55,7 @@ tippecanoe \
     --minimum-zoom 0 --maximum-zoom 16 \
     --drop-smallest-as-needed \
     --force --output "$WORKDIR/conflated.mbtiles" \
-    "$WORKDIR/conflated.geojson"
+    "$WORKDIR/all-roads.geojson"
 
 export MapboxAccessToken=$MAPBOX_ACCESS_TOKEN
 mapbox-upload \
