@@ -7,6 +7,9 @@ var collect = require('stream-collect')
 var match = require('networkmatch')
 var linestring = require('turf-linestring')
 var ndjson = require('ndjson')
+var GeoJsonGeometriesLookup = require('geojson-geometries-lookup');
+var provinces = JSON.parse(fs.readFileSync(process.argv[3], {'encoding': 'utf-8'}));
+var glookup = new GeoJsonGeometriesLookup(provinces);
 
 // 50m threshold
 var THRESHOLD = 0.005
@@ -30,8 +33,16 @@ collect(input, function (i) {
     .map(c => c[2])
 
     if (neighbors.length) {
-      let ids = neighbors.join(',')
-      return { way_id: feature.way_id, neighbors: `"{${ids}}"` }
+      // find provinces this way passes through
+      let provinceMemberships = glookup.getContainers(feature.geometry, {ignorePoints: true});
+      let provinceIds = [];
+      provinceMemberships.features.forEach(membership => {
+        provinceIds.push(membership.properties.id);
+      });
+
+      provinceIds = provinceIds.join(',');
+      let ids = neighbors.join(',');
+      return { way_id: feature.way_id, neighbors: `"{${ids}}"`, provinces: `"{${provinceIds}}"` }
     }
     return null
   }
@@ -39,7 +50,7 @@ collect(input, function (i) {
   match.index(network)
   var result = network.features.map(lookForIntersections).filter(Boolean)
 
-  var headers = ['way_id', 'neighbors']
+  var headers = ['way_id', 'neighbors', 'provinces']
   result.forEach(result => {
     console.log(headers.map(h => result[h]).join(','))
   })
