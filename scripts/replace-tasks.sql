@@ -2,6 +2,6 @@
 
 BEGIN;
   TRUNCATE TABLE tasks;
-  \copy tasks(way_id, neighbors) from .tmp/tasks.csv WITH (FORMAT csv)
+  \copy tasks(way_id, neighbors, provinces) from .tmp/tasks.csv WITH (FORMAT csv)
 
 COMMIT;

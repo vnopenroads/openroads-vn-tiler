@@ -29,11 +29,15 @@ do
         echo "No roads found for province ${province_code}"
         continue
     else
-        echo "Appending national roads for the province"
-        ../scripts/append-national-roads.js \
-            National_network.geojson \
-            target-boundary.geojson \
-            data/output/Adj_lines.csv
+
+        # TODO: this is just temporarily turning off appending national roads while
+        # we debug https://github.com/orma/openroads-vn-analytics/issues/360
+
+        # echo "Appending national roads for the province"
+        # ../scripts/append-national-roads.js \
+        #     National_network.geojson \
+        #     target-boundary.geojson \
+        #     data/output/Adj_lines.csv
 
         echo "Making network routable"
         python Network_Clean.py
