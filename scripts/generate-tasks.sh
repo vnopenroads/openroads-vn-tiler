@@ -8,7 +8,7 @@ mkdir -p .tmp
 if [ -n "${DATABASE_URL}" ]; then
   echo "Dumping ways"
   echo $DATABASE_URL
-  cat ways.sql | psql $DATABASE_URL
+  cat ways-modified-24-hours.sql | psql $DATABASE_URL
 
   echo "Dumping provinces"
   cat provinces.sql | psql $DATABASE_URL
