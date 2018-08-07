@@ -45,7 +45,6 @@ collect(input, function (i) {
       provinceMemberships.features.forEach(membership => {
         provinceIds.push(membership.properties.id);
       });
-
       // find districts this way passes through
       let districtsMemberships = glookupDistricts.getContainers(feature.geometry, {ignorePoints: true});
       let districtIds = [];

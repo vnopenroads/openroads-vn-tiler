@@ -30,7 +30,7 @@ echo "Create FeatureCollection of districts"
 geojson-stream-merge --input .tmp/districts.json --output .tmp/districts.geojson
 
 echo "Generating tasks provinces"
-./generate-tasks.js .tmp/network.geojson .tmp/provinces.geojson > .tmp/tasks-provinces.csv
+./generate-tasks.js .tmp/network.geojson .tmp/provinces.geojson .tmp/districts.geojson > .tmp/tasks-provinces.csv
 
 echo "Replacing tasks table with new tasks"
 cat replace-tasks.sql | psql $DATABASE_URL
