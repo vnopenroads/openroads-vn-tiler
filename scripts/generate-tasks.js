@@ -45,7 +45,7 @@ collect(input, function (i) {
       let ids = neighbors.join(',');
       // create a uuid as a string of all way ids involved for deduping later
       let uuid = neighbors.concat([feature.way_id]).sort().join(',')
-      return { uuid: uuid, way_id: feature.way_id, neighbors: `"{${ids}}"`, provinces: `"{${provinceIds}}"` }
+      return { uuid: uuid, way_id: feature.way_id, neighbors: `"{${ids}}"`, provinces: `"{${provinceIds}}"`, updated_at: new Date().toISOString() }
     }
     return null
   }
@@ -55,7 +55,7 @@ collect(input, function (i) {
   result = _.uniqBy(result, (task) => {
     return task.uuid;
   });
-  var headers = ['way_id', 'neighbors', 'provinces']
+  var headers = ['way_id', 'neighbors', 'provinces', 'updated_at']
   result.forEach(result => {
     console.log(headers.map(h => result[h]).join(','))
   })
