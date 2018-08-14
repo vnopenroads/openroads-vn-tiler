@@ -70,15 +70,19 @@ merge(ways, mergedProperties, toKey)
   var wayArr = kv.value;
   var properties = (wayArr[0] && wayArr[0].properties) || (wayArr[1] && wayArr[1].properties) || {};
   var coordinates = wayArr[0] && wayArr[0].coordinates || wayArr[1] && wayArr[1].coordinates;
-  next(null, {
-    type: 'Feature',
-    properties: properties,
-    way_id: wayArr[0].way_id,
-    geometry: {
-      type: 'LineString',
-      coordinates: coordinates
-    }
-  })
+  if (coordinates) {
+    next(null, {
+      type: 'Feature',
+      properties: properties,
+      way_id: wayArr[0].way_id,
+      geometry: {
+        type: 'LineString',
+        coordinates: coordinates
+      }
+    });
+  } else {
+    next();
+  }
 }))
 .pipe(jsonstream.stringify('', '\n', ''))
 .pipe(process.stdout)
