@@ -7,6 +7,7 @@ var collect = require('stream-collect')
 var match = require('networkmatch')
 var linestring = require('turf-linestring')
 var ndjson = require('ndjson')
+var _ = require('lodash');
 var GeoJsonGeometriesLookup = require('geojson-geometries-lookup');
 var provinces = JSON.parse(fs.readFileSync(process.argv[3], {'encoding': 'utf-8'}));
 var glookup = new GeoJsonGeometriesLookup(provinces);
@@ -42,15 +43,19 @@ collect(input, function (i) {
 
       provinceIds = provinceIds.join(',');
       let ids = neighbors.join(',');
-      return { way_id: feature.way_id, neighbors: `"{${ids}}"`, provinces: `"{${provinceIds}}"` }
+      // create a uuid as a string of all way ids involved for deduping later
+      let uuid = neighbors.concat([feature.way_id]).sort().join(',')
+      return { uuid: uuid, way_id: feature.way_id, neighbors: `"{${ids}}"`, provinces: `"{${provinceIds}}"`, updated_at: new Date().toISOString() }
     }
     return null
   }
 
   match.index(network)
   var result = network.features.map(lookForIntersections).filter(Boolean)
-
-  var headers = ['way_id', 'neighbors', 'provinces']
+  result = _.uniqBy(result, (task) => {
+    return task.uuid;
+  });
+  var headers = ['way_id', 'neighbors', 'provinces', 'updated_at']
   result.forEach(result => {
     console.log(headers.map(h => result[h]).join(','))
   })
