@@ -25,15 +25,19 @@ collect(input, function (i) {
   }
 
   function lookForIntersections (feature) {
-    var start = linestring(feature.geometry.coordinates.slice(0, 2))
-    var end = linestring(feature.geometry.coordinates.slice(-2, 0))
-    start._id = end._id = feature.way_id
+    var neighbors;
 
-    var neighbors = match.match(start, THRESHOLD)
-    .concat(match.match(end, THRESHOLD))
-    .map(c => c[2])
+    // filter for ways with vpromms.
+    if (feature.properties.hasOwnProperty('or_vpromms')) {
+      var start = linestring(feature.geometry.coordinates.slice(0, 2))
+      var end = linestring(feature.geometry.coordinates.slice(-2, 0))
+      start._id = end._id = feature.way_id
+      neighbors = match.match(start, THRESHOLD)
+      .concat(match.match(end, THRESHOLD))
+      .map(c => c[2])
+    }
 
-    if (neighbors.length) {
+    if (neighbors && neighbors.length) {
       // find provinces this way passes through
       let provinceMemberships = glookup.getContainers(feature.geometry, {ignorePoints: true});
       let provinceIds = [];
