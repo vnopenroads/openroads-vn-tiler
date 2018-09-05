@@ -15,9 +15,9 @@ BEGIN;
     GROUP BY wt.v, l.district, l.province, l.length;
 
   UPDATE road_properties
-  SET properties = properties || JSONB_BUILD_OBJECT('length', lengths.length)
-  FROM lengths
-  WHERE id = lengths.or_vpromms;
+  SET properties = properties || JSONB_BUILD_OBJECT('length', vpromm_lengths.length)
+  FROM vpromm_lengths
+  WHERE id = vpromm_lengths.or_vpromms;
 
   UPDATE admin_boundaries a
   SET total_length = l.sum
