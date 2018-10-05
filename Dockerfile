@@ -4,7 +4,8 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Get node and yarn
 RUN sudo apt-get update -y
-RUN apt-get install -y build-essential software-properties-common curl git && add-apt-repository ppa:ubuntu-toolchain-r/test
+RUN apt-get install -y build-essential software-properties-common curl git mercurial && add-apt-repository ppa:ubuntu-toolchain-r/test
+RUN apt-get update -y
 RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 RUN apt-get install -y nodejs 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
@@ -39,6 +40,7 @@ RUN apt-get install -y \
 	gfortran \
 	zip
 ADD Network_Cleaning/requirements.txt /tmp/requirements.txt
+RUN hg clone https://bitbucket.org/chris_forbes/descartes && cd descartes && hg checkout fix-compatability-with-matplotlib-3.0+ && python setup.py install
 RUN pip install -r /tmp/requirements.txt
 
 # Install node modules
