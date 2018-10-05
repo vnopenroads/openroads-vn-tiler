@@ -40,6 +40,7 @@ RUN apt-get install -y \
 	gfortran \
 	zip
 ADD Network_Cleaning/requirements.txt /tmp/requirements.txt
+RUN pip install setuptools
 RUN hg clone https://bitbucket.org/chris_forbes/descartes && cd descartes && hg checkout fix-compatability-with-matplotlib-3.0+ && python setup.py install
 RUN pip install -r /tmp/requirements.txt
 
