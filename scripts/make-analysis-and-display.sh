@@ -32,6 +32,14 @@ split --lines 1 $WORKDIR/network.geojson "$WORKDIR/network/"
     $WORKDIR/network/* \
     > $WORKDIR/network-merged.geojson
 
+echo "Creating export for CBA"
+./create-cba-export $WORKDIR/network.geojson > $WORKDIR/orma-sections.csv
+
+echo "Upload the export to S3. Note that this needs to be changes to a location accessible by CBA scripts."
+aws s3 cp \
+    "${WORKDIR}/orma-sections.csv" \
+    "s3://${S3_DUMP_BUCKET}/cba/orma-sections-$(date +%Y-%m-%d).csv
+
 echo "Downloading national highways, which aren't tracked in ORMA"
 aws s3 cp \
     "s3://$S3_DUMP_BUCKET/private-fixture-data/National_network.geojson" \
