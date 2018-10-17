@@ -38,7 +38,7 @@ echo "Creating export for CBA"
 echo "Upload the export to S3. Note that this needs to be changes to a location accessible by CBA scripts."
 aws s3 cp \
     "${WORKDIR}/orma-sections.csv" \
-    "s3://${S3_DUMP_BUCKET}/cba/orma-sections-$(date +%Y-%m-%d).csv
+    "s3://${S3_DUMP_BUCKET}/cba/orma-sections-$(date +%Y-%m-%d).csv"
 
 echo "Downloading national highways, which aren't tracked in ORMA"
 aws s3 cp \
