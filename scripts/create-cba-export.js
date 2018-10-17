@@ -38,7 +38,7 @@ collect(input, (i) => {
                 if (feature.properties.hasOwnProperty(h)) {
                     return feature.properties[h];
                 } else {
-                    return undefined;
+                    return "";
                 }
             })
             stringifier.write(row);
