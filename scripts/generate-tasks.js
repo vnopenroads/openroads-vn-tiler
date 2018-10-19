@@ -10,7 +10,9 @@ var ndjson = require('ndjson')
 var _ = require('lodash');
 var GeoJsonGeometriesLookup = require('geojson-geometries-lookup');
 var provinces = JSON.parse(fs.readFileSync(process.argv[3], {'encoding': 'utf-8'}));
-var glookup = new GeoJsonGeometriesLookup(provinces);
+var districts = JSON.parse(fs.readFileSync(process.argv[4], {'encoding': 'utf-8'}));
+var glookupProvinces = new GeoJsonGeometriesLookup(provinces);
+var glookupDistricts = new GeoJsonGeometriesLookup(districts);
 
 // 50m threshold
 var THRESHOLD = 0.005
@@ -23,7 +25,6 @@ collect(input, function (i) {
     type: 'FeatureCollection',
     features: i
   }
-
   function lookForIntersections (feature) {
     var neighbors;
 
@@ -39,17 +40,24 @@ collect(input, function (i) {
 
     if (neighbors && neighbors.length) {
       // find provinces this way passes through
-      let provinceMemberships = glookup.getContainers(feature.geometry, {ignorePoints: true});
+      let provinceMemberships = glookupProvinces.getContainers(feature.geometry, {ignorePoints: true});
       let provinceIds = [];
       provinceMemberships.features.forEach(membership => {
         provinceIds.push(membership.properties.id);
       });
+      // find districts this way passes through
+      let districtsMemberships = glookupDistricts.getContainers(feature.geometry, {ignorePoints: true});
+      let districtIds = [];
+      districtsMemberships.features.forEach(membership => {
+        districtIds.push(membership.properties.id);
+      });
 
       provinceIds = provinceIds.join(',');
+      districtIds = districtIds.join(',');
       let ids = neighbors.join(',');
       // create a uuid as a string of all way ids involved for deduping later
       let uuid = neighbors.concat([feature.way_id]).sort().join(',')
-      return { uuid: uuid, way_id: feature.way_id, neighbors: `"{${ids}}"`, provinces: `"{${provinceIds}}"`, updated_at: new Date().toISOString() }
+      return { uuid: uuid, way_id: feature.way_id, neighbors: `"{${ids}}"`, provinces: `"{${provinceIds}}"`, districts: `"{${districtIds}}"`, updated_at: new Date().toISOString() }
     }
     return null
   }
@@ -59,7 +67,8 @@ collect(input, function (i) {
   result = _.uniqBy(result, (task) => {
     return task.uuid;
   });
-  var headers = ['way_id', 'neighbors', 'provinces', 'updated_at']
+  var headers = ['way_id', 'neighbors', 'provinces', 'districts', 'updated_at']
+
   result.forEach(result => {
     console.log(headers.map(h => result[h]).join(','))
   })

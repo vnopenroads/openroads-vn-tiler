@@ -1,6 +1,8 @@
 -- Truncate and upload new tasks
 
 BEGIN;
-  \copy tasks(way_id, neighbors, provinces, updated_at) from .tmp/tasks.csv WITH (FORMAT csv)
+
+  TRUNCATE TABLE tasks;
+  \copy tasks(way_id, neighbors, provinces, districts, updated_at) from .tmp/tasks.csv WITH (FORMAT csv)
 
 COMMIT;
