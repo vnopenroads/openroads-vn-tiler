@@ -34,9 +34,10 @@ echo "Creating export for CBA"
 ./create-cba-export.js $WORKDIR/network.geojson > $WORKDIR/orma-sections.csv
 
 echo "Upload the export to S3. Note that this needs to be changes to a location accessible by CBA scripts."
-# aws s3 cp \
-#     "${WORKDIR}/orma-sections.csv" \
-#     "s3://${S3_DUMP_BUCKET}/cba/orma-sections-$(date +%Y-%m-%d).csv"
+aws s3 cp \
+    --acl public-read \
+    "${WORKDIR}/orma-sections.csv" \
+    "s3://${S3_DUMP_BUCKET}/cba/orma-sections-$(date +%Y-%m-%d).csv"
 
 ## Note - since we're using WON, we don't need to conflate with the national network.
 ## National network will now be moved to another tileset on Mapbox.
