@@ -18,6 +18,7 @@ Generates raster tiles from an OSM-API-v0.6-compatible database and pushes these
 - `tippecanoe`
 - `node` v6
 - `yarn`
+- [`geojson-stream-merge`](https://www.npmjs.com/package/geojson-stream-merge)
 
 ### Environment variables
 

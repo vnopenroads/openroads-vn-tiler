@@ -12,6 +12,9 @@ if [ -n "${DATABASE_URL}" ]; then
 
   echo "Dumping provinces"
   cat provinces.sql | psql $DATABASE_URL
+
+  echo "Dumping districts"
+  cat districts.sql | psql $DATABASE_URL
 else
   echo "environment variable DATABASE_URL is not defined"
   exit 1;
@@ -23,8 +26,11 @@ echo "Converting to GeoJSON"
 echo "Create FeatureCollection of provinces"
 geojson-stream-merge --input .tmp/provinces.json --output .tmp/provinces.geojson
 
-echo "Generating tasks"
-./generate-tasks.js .tmp/network.geojson .tmp/provinces.geojson > .tmp/tasks.csv
+echo "Create FeatureCollection of districts"
+geojson-stream-merge --input .tmp/districts.json --output .tmp/districts.geojson
+
+echo "Generating tasks provinces and districts"
+./generate-tasks.js .tmp/network.geojson .tmp/provinces.geojson .tmp/districts.geojson > .tmp/tasks.csv
 
 echo "Replacing tasks table with new tasks"
 cat replace-tasks.sql | psql $DATABASE_URL
