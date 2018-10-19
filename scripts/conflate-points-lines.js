@@ -20,6 +20,10 @@ const POINT_PROPERTIES = [
   'iri'
 ];
 
+roads.features = roads.features.filter((r) => {
+  return (r.geometry.coordinates.length >= 2);
+});
+
 const segments = roads.features.reduce((acc, val) => {
   // Explode any MultiLineStrings into LineStrings
   return val.geometry.type === 'LineString'
