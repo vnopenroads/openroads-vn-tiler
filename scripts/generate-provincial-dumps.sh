@@ -17,4 +17,11 @@ echo "Map all roads to provinces and join properties"
 psql "${DATABASE_URL}" -f generate-provincial-dumps.sql 
 
 # Read .tmp/provincial_dump.csv, csv stringify and write to the respective province CSV.
+echo "Preparing CSV per province"
 ./provincial-sort.js .tmp/provincial_dump.csv
+
+echo "Uploading to s3"
+aws s3 cp --recursive \
+    --acl public-read \
+    .tmp/provinces/ \
+    "s3://${S3_DUMP_BUCKET}/by-province-id/${province_code}.csv"
