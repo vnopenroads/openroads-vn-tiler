@@ -10,6 +10,9 @@ echo "Ensure the necessary environment variables are set"
 # Change to script's directory
 cd "${0%/*}"
 
+OUTPUT_DIR='.tmp/provinces/'
+mkdir -p $OUTPUT_DIR
+
 echo "Map all roads to provinces and join properties"
 psql "${DATABASE_URL}" -f generate-provincial-dumps.sql 
 
