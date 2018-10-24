@@ -20,9 +20,9 @@ const POINT_PROPERTIES = [
   'iri'
 ];
 
+// filter out invalid lines.
 roads.features = roads.features.filter((r) => {
-  return (r.geometry.coordinates.length >= 2);
-});
+  return (r.geometry.coordinates.length >= 2 && _.difference(r.geometry.coordinates[0], r.geometry.coordinates[1]).length > 0);});
 
 const segments = roads.features.reduce((acc, val) => {
   // Explode any MultiLineStrings into LineStrings
