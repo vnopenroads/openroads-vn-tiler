@@ -75,7 +75,7 @@ console.log(headers.join(','));
 collect(input, (i) => {
     // we export only sections with vpromm ids.
     const sections = _.filter(i, s => {
-        return s.properties.hasOwnProperty('or_vpromms');
+        return s.geometry.coordinates.length > 2 && s.properties.hasOwnProperty('or_vpromms');
     });
     sections.forEach(feature => {
         // get all points that fall on this line.
