@@ -31,8 +31,8 @@ BEGIN;
   SELECT l.way_id, l.geom,
   AVG(ST_LENGTH(l.geom::GEOGRAPHY)) / 1000 AS length,
   a.id as district, a.parent_id as province
-  FROM lines l
-  FULL JOIN admin_boundaries a ON ST_contains(a.geom, l.geom) WHERE a.type='district'
+  FROM lines AS l, admin_boundaries AS a
+  WHERE ST_Intersects(a.geom, l.geom) AND a.type='district'
   GROUP BY way_id, l.geom, a.id, a.parent_id;
 
   CREATE TEMP VIEW vpromm_lengths AS
