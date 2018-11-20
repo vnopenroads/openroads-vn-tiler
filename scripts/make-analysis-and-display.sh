@@ -34,7 +34,7 @@ echo "Adding IRI date to GeoJSON"
 ./add-iri-to-geojson.js $WORKDIR/network.geojson $WORKDIR/points.geojson > $WORKDIR/orma-sections.geojson
 
 echo "Creating CSV for CBA export"
-./create-cba_export $WORKDIR/orma-sections.geojson > $WORKDIR/orma-sections.csv
+./create-cba_export.js $WORKDIR/orma-sections.geojson > $WORKDIR/orma-sections.csv
 # echo "Upload the export to S3. Note that this needs to be changes to a location accessible by CBA scripts."
 aws s3 cp \
     --acl public-read \
