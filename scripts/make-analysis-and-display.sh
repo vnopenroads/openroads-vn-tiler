@@ -28,12 +28,14 @@ echo "Converting network to GeoJSON"
 mkdir -p $WORKDIR/network
 ./to-geojson.js $WORKDIR/waynodes.csv $WORKDIR/waytags.csv $WORKDIR/road_properties.csv > $WORKDIR/network.geojson
 
-geojson-stream-merge --input $WORKDIR/network.geojson --output $WORKDIR/network-merged.geojson
+# geojson-stream-merge --input $WORKDIR/network.geojson --output $WORKDIR/network-merged.geojson
 
-echo "Creating export for CBA"
-./create-cba-export.js $WORKDIR/network.geojson $WORKDIR/points.geojson > $WORKDIR/orma-sections.csv
+echo "Adding IRI date to GeoJSON"
+./add-iri-to-geojson.js $WORKDIR/network.geojson $WORKDIR/points.geojson > $WORKDIR/orma-sections.geojson
 
-echo "Upload the export to S3. Note that this needs to be changes to a location accessible by CBA scripts."
+echo "Creating CSV for CBA export"
+./create-cba_export $WORKDIR/orma-sections.geojson > $WORKDIR/orma-sections.csv
+# echo "Upload the export to S3. Note that this needs to be changes to a location accessible by CBA scripts."
 aws s3 cp \
     --acl public-read \
     "${WORKDIR}/orma-sections.csv" \
@@ -47,11 +49,11 @@ aws s3 cp \
 #     "s3://$S3_DUMP_BUCKET/private-fixture-data/National_network.geojson" \
 #     "$WORKDIR/National_network.geojson"
 
-echo "Conflate point data's core OR attributes onto network lines"
-./conflate-points-lines.js \
-    $WORKDIR/network-merged.geojson \
-    $WORKDIR/points.geojson \
-    $WORKDIR/conflated.geojson
+# echo "Conflate point data's core OR attributes onto network lines"
+# ./conflate-points-lines.js \
+#     $WORKDIR/network-merged.geojson \
+#     $WORKDIR/points.geojson \
+#     $WORKDIR/conflated.geojson
 
 # echo "Merging conflated ORMA roads and national highways into one network file"
 # ../node_modules/.bin/geojson-merge \
@@ -65,7 +67,7 @@ tippecanoe \
     --minimum-zoom 0 --maximum-zoom 16 \
     --drop-smallest-as-needed \
     --force --output "$WORKDIR/conflated.mbtiles" \
-    "$WORKDIR/conflated.geojson"
+    "$WORKDIR/orma-sections.geojson"
 
 export MapboxAccessToken=$MAPBOX_ACCESS_TOKEN
 mapbox-upload \
