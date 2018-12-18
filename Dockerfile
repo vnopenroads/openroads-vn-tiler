@@ -41,19 +41,19 @@ RUN apt-get install -y \
 	zip
 ADD Network_Cleaning/requirements.txt /tmp/requirements.txt
 RUN pip install -U setuptools
-#RUN hg clone http://bitbucket.org/chris_forbes/descartes && cd descartes && hg checkout fix-compatability-with-matplotlib-3.0+ && python setup.py install
-#RUN pip install -r /tmp/requirements.txt
+RUN hg clone http://bitbucket.org/chris_forbes/descartes && cd descartes && hg checkout fix-compatability-with-matplotlib-3.0+ && python setup.py install
+RUN pip install -r /tmp/requirements.txt
 
 # Install node modules
-#ENV NPM_CONFIG_LOGLEVEL=warn
-#ADD package.json /tmp/package.json
-#RUN cd /tmp && yarn
-#RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
+ENV NPM_CONFIG_LOGLEVEL=warn
+ADD package.json /tmp/package.json
+RUN cd /tmp && yarn
+RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
 
-#RUN node -v 
+RUN node -v 
 
 # Change to app directory
-#WORKDIR /opt/app
-#ADD . /opt/app
+WORKDIR /opt/app
+ADD . /opt/app
 
-#CMD ["node", "/opt/app/index.js"]
+CMD ["node", "/opt/app/index.js"]
