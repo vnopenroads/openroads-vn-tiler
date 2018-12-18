@@ -24,25 +24,6 @@ RUN apt-get install -y libprotobuf-dev protobuf-compiler libsqlite3-dev && git c
 # The Ubuntu Trusty version of `requests` is insufficient for `mapboxcli` uploads
 RUN apt-get install -y python-pip && pip install --upgrade requests && pip install awscli && npm install -g mapbox-upload geojson-stream-merge
 
-# Get geospatial libraries necessary for routability code
-RUN apt-get install -y \
-	python-dev \
-	python-gdal \
-	python-tk \
-	gdal-bin \
-	libspatialindex-dev \
-	libfreetype6-dev \
-	libpng12-dev \
-	libgdal-dev \
-	libblas-dev \
-	liblapack-dev \
-	libatlas-base-dev \
-	gfortran \
-	zip
-ADD Network_Cleaning/requirements.txt /tmp/requirements.txt
-RUN pip install -U setuptools
-RUN hg clone http://bitbucket.org/chris_forbes/descartes && cd descartes && hg checkout fix-compatability-with-matplotlib-3.0+ && python setup.py install
-RUN pip install -r /tmp/requirements.txt
 
 # Install node modules
 ENV NPM_CONFIG_LOGLEVEL=warn
