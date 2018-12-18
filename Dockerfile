@@ -1,12 +1,12 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
 # Get node and yarn
-RUN sudo apt-get update -y
+RUN apt-get update -y
 RUN apt-get install -y build-essential software-properties-common curl git mercurial && add-apt-repository ppa:ubuntu-toolchain-r/test
 RUN apt-get update -y
-RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
 RUN apt-get install -y nodejs 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
@@ -41,19 +41,19 @@ RUN apt-get install -y \
 	zip
 ADD Network_Cleaning/requirements.txt /tmp/requirements.txt
 RUN pip install -U setuptools
-RUN hg clone https://bitbucket.org/chris_forbes/descartes && cd descartes && hg checkout fix-compatability-with-matplotlib-3.0+ && python setup.py install
-RUN pip install -r /tmp/requirements.txt
+#RUN hg clone http://bitbucket.org/chris_forbes/descartes && cd descartes && hg checkout fix-compatability-with-matplotlib-3.0+ && python setup.py install
+#RUN pip install -r /tmp/requirements.txt
 
 # Install node modules
-ENV NPM_CONFIG_LOGLEVEL=warn
-ADD package.json /tmp/package.json
-RUN cd /tmp && yarn
-RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
+#ENV NPM_CONFIG_LOGLEVEL=warn
+#ADD package.json /tmp/package.json
+#RUN cd /tmp && yarn
+#RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
 
-RUN node -v 
+#RUN node -v 
 
 # Change to app directory
-WORKDIR /opt/app
-ADD . /opt/app
+#WORKDIR /opt/app
+#ADD . /opt/app
 
-CMD ["node", "/opt/app/index.js"]
+#CMD ["node", "/opt/app/index.js"]
