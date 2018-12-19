@@ -27,6 +27,7 @@ stringifier.on('readable', () => {
 })
 
 process.stdout.write(headers.join(','));
+process.stdout.write('\n');
 collect(input, (i) => {
     // we export only sections with vpromm ids.
     const sections = _.filter(i, s => {
