@@ -54,21 +54,21 @@ BEGIN;
   UPDATE admin_boundaries a
   SET total_length = l.sum
   FROM (SELECT district, SUM(length) FROM lines_admin GROUP BY district) AS l
-  WHERE l.district = a.id;
+  WHERE l.district = a.id AND a.type='district';
 
   UPDATE admin_boundaries a
   SET total_length = l.sum
   FROM (SELECT province, SUM(length) FROM lines_admin GROUP BY province) AS l
-  WHERE l.province = a.id;
+  WHERE l.province = a.id AND a.type='province';
 
   UPDATE admin_boundaries a
   SET vpromm_length = l.sum
   FROM (SELECT district, SUM(length) FROM vpromm_lengths GROUP BY district) AS l
-  WHERE l.district = a.id;
+  WHERE l.district = a.id AND a.type='district';
 
   UPDATE admin_boundaries a
   SET vpromm_length = l.sum
   FROM (SELECT province, SUM(length) FROM vpromm_lengths GROUP BY province) AS l
-  WHERE l.province = a.id;
+  WHERE l.province = a.id AND a.type='province';
 
 COMMIT;
