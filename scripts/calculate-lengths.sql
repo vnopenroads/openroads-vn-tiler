@@ -1,5 +1,6 @@
 BEGIN;
 
+  DROP VIEW vpromm_lengths;
   DROP MATERIALIZED VIEW lines_admin;
   DROP MATERIALIZED VIEW lines;
   DROP MATERIALIZED VIEW points;
@@ -35,15 +36,15 @@ BEGIN;
   WHERE ST_Intersects(a.geom, l.geom) AND a.type='district'
   GROUP BY way_id, l.geom, a.id, a.parent_id;
 
-  CREATE TEMP VIEW vpromm_lengths AS
+  CREATE VIEW vpromm_lengths AS
     SELECT wt.v AS or_vpromms,
-    l.district, l.province, l.length
+    l.district, l.province, SUM(l.length) as length
     FROM lines_admin AS l
     LEFT JOIN current_way_tags AS wt ON
       wt.way_id = l.way_id AND
       wt.k = 'or_vpromms'
     WHERE wt.v IS NOT NULL
-    GROUP BY wt.v, l.district, l.province, l.length;
+    GROUP BY wt.v, l.district, l.province;
 
   UPDATE road_properties
   SET properties = properties || JSONB_BUILD_OBJECT('length', vpromm_lengths.length)
