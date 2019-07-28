@@ -38,7 +38,6 @@ echo "Creating CSV for CBA export"
 
 # echo "Upload the export to S3. Note that this needs to be changes to a location accessible by CBA scripts."
 aws s3 cp \
-    --acl public-read \
     "${WORKDIR}/orma-sections.csv" \
     "s3://${S3_DUMP_BUCKET}/cba/orma-sections-$(date +%Y-%m-%d).csv"
 

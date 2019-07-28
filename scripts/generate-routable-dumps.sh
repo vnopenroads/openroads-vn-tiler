@@ -42,7 +42,6 @@ do
         echo "Making network routable"
         python Network_Clean.py
         aws s3 cp \
-            --acl public-read \
             data/output/Network.csv \
             "s3://${S3_DUMP_BUCKET}/by-province-id/${province_code}.csv"
     fi

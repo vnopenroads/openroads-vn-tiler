@@ -37,4 +37,4 @@ RUN node -v
 WORKDIR /opt/app
 ADD . /opt/app
 
-CMD ["node", "/opt/app/index.js"]
+CMD ["sh", "/opt/app/cron.sh"]

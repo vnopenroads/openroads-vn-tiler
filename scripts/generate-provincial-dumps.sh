@@ -22,6 +22,5 @@ echo "Preparing CSV per province"
 
 echo "Uploading to s3"
 aws s3 cp --recursive \
-    --acl public-read \
     .tmp/provinces/ \
     "s3://${S3_DUMP_BUCKET}/by-province-id/"
