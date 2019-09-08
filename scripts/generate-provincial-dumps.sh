@@ -3,8 +3,6 @@ set -e
 
 echo "Ensure the necessary environment variables are set"
 : "${DATABASE_URL:?}"
-: "${AWS_ACCESS_KEY_ID:?}"
-: "${AWS_SECRET_ACCESS_KEY:?}"
 
 # Change to script's directory
 cd "${0%/*}"

@@ -4,8 +4,6 @@ set -e
 echo "Ensure the necessary environment variables are set"
 # Credentials
 : "${DATABASE_URL:?}"
-: "${AWS_ACCESS_KEY_ID:?}"
-: "${AWS_SECRET_ACCESS_KEY:?}"
 : "${MAPBOX_ACCESS_TOKEN:?}"
 : "${MAPBOX_ACCOUNT:?}"
 
