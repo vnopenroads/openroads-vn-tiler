@@ -18,4 +18,5 @@ echo "Preparing CSV per province"
 ./provincial-sort.js .tmp/provincial_dump.csv
 
 echo "Backup..."
-cp -r .tmp/provinces ./backup/by-province-id/
+mkdir -p ../backup/by-province-id/
+cp -r .tmp/provinces ../backup/by-province-id/
