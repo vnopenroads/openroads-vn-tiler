@@ -34,7 +34,7 @@ echo "Creating CSV for CBA export"
 ./create-cba-export.js $WORKDIR/orma-sections.geojson > $WORKDIR/orma-sections.csv
 
 # echo "save to local. Note that this needs to be changes to a location accessible by CBA scripts."
-cp "${WORKDIR}/orma-sections.csv" "/backup/cba/orma-sections-$(date +%Y-%m-%d).csv"
+cp "${WORKDIR}/orma-sections.csv" "./backup/cba/orma-sections-$(date +%Y-%m-%d).csv"
 
 echo "Creating GeoJSON with extra properties stripped out"
 ./strip-extra-properties.js $WORKDIR/orma-sections.geojson > $WORKDIR/orma-sections-trimmed.geojson

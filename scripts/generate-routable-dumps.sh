@@ -9,7 +9,7 @@ cd "${0%/*}"
 cd ../Network_Cleaning
 
 echo "Downloading national highways, which aren't tracked in ORMA"
-cp "/backup/private-fixture-data/National_network.geojson" National_network.geojson
+cp "./backup/private-fixture-data/National_network.geojson" National_network.geojson
 
 echo "For each province, generate and upload a routable road dump"
 # For now, just hard-code the fourteen trial provinces
@@ -36,7 +36,7 @@ do
 
         echo "Making network routable"
         python Network_Clean.py
-        cp data/output/Network.csv /backup/by-province-id/${province_code}.csv
+        cp data/output/Network.csv ./backup/by-province-id/${province_code}.csv
     fi
 
     rm target-boundary.geojson
