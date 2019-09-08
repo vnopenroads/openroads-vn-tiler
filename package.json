@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@mapbox/geojson-merge": "^1.0.2",
-    "@mapbox/mapbox-tile-copy": "^6.2.1",
+    "@mapbox/mapbox-tile-copy": "^7.3.2",
     "@turf/buffer": "^5.1.5",
     "@turf/distance": "^4.5.2",
     "@turf/helpers": "^4.5.2",
