@@ -25,7 +25,7 @@ RUN apt-get install -y python-pip && pip install --upgrade requests && npm insta
 ENV NPM_CONFIG_LOGLEVEL=warn
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm i
-RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
+RUN mkdir -p /backup/mbtiles/ && mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
 
 RUN node -v 
 
