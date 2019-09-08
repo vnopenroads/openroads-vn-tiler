@@ -23,13 +23,10 @@ tippecanoe -l network -z 16 -f -P -o $WORKDIR/network.mbtiles $WORKDIR/network.g
 
 echo "Output basemap tiles"
 pwd
-if [ -n "${AWS_ACCESS_KEY_ID}" ]; then
-    echo "Pushing to $S3_TEMPLATE"
-    AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY ../node_modules/.bin/mapbox-tile-copy $PWD/$WORKDIR/network.mbtiles $S3_TEMPLATE
-else
-  echo "environment variable AWS_ACCESS_KEY_ID is not defined"
-  exit 1;
-fi
+
+echo "extract mbtiles to local"
+../node_modules/.bin/mapbox-tile-copy $PWD/$WORKDIR/network.mbtiles "${S3_TEMPLATE}?filetype=vector.pbf.gz"
+gunzip -r $S3_TEMPLATE
 
 rm -rf tmp-network
 
