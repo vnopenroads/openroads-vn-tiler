@@ -16,6 +16,7 @@ psql "${DATABASE_URL}" -f full-backup.sql
 
 echo "Save the database backup to local"
 zip -r "${WORKDIR}/full-backup.zip" "$WORKDIR"
-cp "${WORKDIR}/full-backup.zip" "backup/full-backup/orma-backup-$(date +%Y-%m-%d).zip"
+mkdir -p ../backup/full-backup/
+cp "${WORKDIR}/full-backup.zip" "../backup/full-backup/orma-backup-$(date +%Y-%m-%d).zip"
 
 echo "Successfully finished"
