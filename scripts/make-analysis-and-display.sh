@@ -8,7 +8,6 @@ echo "Ensure the necessary environment variables are set"
 : "${AWS_SECRET_ACCESS_KEY:?}"
 : "${MAPBOX_ACCESS_TOKEN:?}"
 : "${MAPBOX_ACCOUNT:?}"
-: "${S3_DUMP_BUCKET:?}"
 
 # Change to script's directory
 cd "${0%/*}"
@@ -36,10 +35,8 @@ echo "Adding IRI data to GeoJSON"
 echo "Creating CSV for CBA export"
 ./create-cba-export.js $WORKDIR/orma-sections.geojson > $WORKDIR/orma-sections.csv
 
-# echo "Upload the export to S3. Note that this needs to be changes to a location accessible by CBA scripts."
-aws s3 cp \
-    "${WORKDIR}/orma-sections.csv" \
-    "s3://${S3_DUMP_BUCKET}/cba/orma-sections-$(date +%Y-%m-%d).csv"
+# echo "save to local. Note that this needs to be changes to a location accessible by CBA scripts."
+cp "${WORKDIR}/orma-sections.csv" "/backup/cba/orma-sections-$(date +%Y-%m-%d).csv"
 
 echo "Creating GeoJSON with extra properties stripped out"
 ./strip-extra-properties.js $WORKDIR/orma-sections.geojson > $WORKDIR/orma-sections-trimmed.geojson

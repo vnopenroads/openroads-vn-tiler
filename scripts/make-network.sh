@@ -25,8 +25,8 @@ echo "Output basemap tiles"
 pwd
 
 echo "extract mbtiles to local"
-../node_modules/.bin/mapbox-tile-copy $PWD/$WORKDIR/network.mbtiles "${S3_TEMPLATE}?filetype=vector.pbf.gz"
-gunzip -r $S3_TEMPLATE
+../node_modules/.bin/mapbox-tile-copy $PWD/$WORKDIR/network.mbtiles "/backup/mbtiles?filetype=vector.pbf.gz"
+gunzip -r /backup/mbtiles
 
 rm -rf tmp-network
 
