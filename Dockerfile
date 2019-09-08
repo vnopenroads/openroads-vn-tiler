@@ -18,7 +18,7 @@ RUN apt-get install -y libprotobuf-dev protobuf-compiler libsqlite3-dev && git c
 
 # Get AWS CLI and Mapbox CLI
 # The Ubuntu Trusty version of `requests` is insufficient for `mapboxcli` uploads
-RUN apt-get install -y python-pip && pip install --upgrade requests && pip install awscli && npm install -g mapbox-upload geojson-stream-merge
+RUN apt-get install -y python-pip && pip install --upgrade requests && npm install -g mapbox-upload geojson-stream-merge
 
 
 # Install node modules
