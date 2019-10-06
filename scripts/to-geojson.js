@@ -26,6 +26,7 @@ var ways = fs.createReadStream(process.argv[2]).pipe(csv({escape: '`'}))
   })
 }))
 
+
 // a stream of properties object for each way, from its 'tags'
 var tags = fs.createReadStream(process.argv[3]).pipe(csv({escape: '`'}))
 .pipe(group(toKey))
@@ -40,17 +41,20 @@ var tags = fs.createReadStream(process.argv[3]).pipe(csv({escape: '`'}))
 
 // a stream of properties for each way, from its road-id-level properties table
 const properties = fs.createReadStream(process.argv[4])
-  .pipe(csv({escape: '"'}))
-  .pipe(group(toKey))
-  .pipe(through.obj(function (kv, _, next) {
-    const way_id = kv.value[0].way_id
-    const properties = JSON.parse(kv.value[0].road_properties)
-    const obj = {way_id, properties}
-    next(null, obj)
-  }))
+.pipe(csv({escape: '"'}))
+.pipe(group(toKey))
+.pipe(through.obj(function (kv, _, next) {
+  const way_id = kv.value[0].way_id
+  const properties = JSON.parse(kv.value[0].road_properties)
+  const obj = {way_id, properties}
+  next(null, obj)
+}))
+
+// stream of ways with admin {way_id, province, district}
+var wadmin = fs.createReadStream(process.argv[5]).pipe(csv({ escape: '"' }))
 
 const mergedProperties = merge(tags, properties, toKey)
-  .pipe(group(toKey))
+.pipe(group(toKey))
   .pipe(through.obj(function (kv, _, next) {
     // If a road only exists in one of these, then we've probably
     // hit a database-read race condition; don't save properties
@@ -63,17 +67,32 @@ const mergedProperties = merge(tags, properties, toKey)
     next(null, {way_id, properties})
   }))
 
+var waysAdmin = merge(ways, wadmin, toKey)
+  .pipe(group(toKey))
+  .pipe(through.obj(function (kv, _, next) {
+    if (!kv.value[0] || !kv.value[1]) { return next(null, null); }
+    
+    var wayArr = kv.value;
+    const way_id = kv.value[0].way_id
+    var coordinates = wayArr[0] && wayArr[0].coordinates || wayArr[1] && wayArr[1].coordinates;
+    var province = wayArr[0] && wayArr[0].province || wayArr[1] && wayArr[1].province;
+    var district = wayArr[0] && wayArr[0].district || wayArr[1] && wayArr[1].district;
+    
+    next(null, { way_id, coordinates, province, district})
+  }))
+
 // merge the streams using way_id, and emit geojson
-merge(ways, mergedProperties, toKey)
+merge(waysAdmin, mergedProperties, toKey)
 .pipe(group(toKey))
 .pipe(through.obj(function (kv, _, next) {
   var wayArr = kv.value;
+  var province = wayArr[0] && wayArr[0].province || wayArr[1] && wayArr[1].province;
   var properties = (wayArr[0] && wayArr[0].properties) || (wayArr[1] && wayArr[1].properties) || {};
   var coordinates = wayArr[0] && wayArr[0].coordinates || wayArr[1] && wayArr[1].coordinates;
   if (coordinates) {
     next(null, {
       type: 'Feature',
-      properties: properties,
+      properties: {province, ...properties},
       way_id: wayArr[0].way_id,
       geometry: {
         type: 'LineString',

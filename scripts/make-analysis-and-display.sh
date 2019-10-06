@@ -23,7 +23,7 @@ cat ways.sql | sed -e 's/.tmp/'"$WORKDIR"'/g' ways.sql | psql "$DATABASE_URL"
 
 echo "Converting network to GeoJSON"
 mkdir -p $WORKDIR/network
-./to-geojson.js $WORKDIR/waynodes.csv $WORKDIR/waytags.csv $WORKDIR/road_properties.csv > $WORKDIR/network.geojson
+./to-geojson.js $WORKDIR/waynodes.csv $WORKDIR/waytags.csv $WORKDIR/road_properties.csv $WORKDIR/waysadmin.csv > $WORKDIR/network.geojson
 
 # geojson-stream-merge --input $WORKDIR/network.geojson --output $WORKDIR/network-merged.geojson
 
@@ -32,6 +32,9 @@ echo "Adding IRI data to GeoJSON"
 
 echo "Creating CSV for CBA export"
 ./create-cba-export.js $WORKDIR/orma-sections.geojson > $WORKDIR/orma-sections.csv
+
+echo "Creating CSV for province CBA export"
+./create-cba-export-by-province.js $WORKDIR/orma-sections.csv > "../backup/cba/provinces/orma-sections.csv"
 
 # echo "save to local. Note that this needs to be changes to a location accessible by CBA scripts."
 mkdir -p ../backup/cba
