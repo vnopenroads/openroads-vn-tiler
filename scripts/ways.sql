@@ -53,7 +53,7 @@ BEGIN;
   SELECT l.way_id, a.id as district, a.parent_id as province
   FROM lines AS l, admin_boundaries AS a
   WHERE ST_Intersects(a.geom, l.geom) AND a.type='district'
-  GROUP BY way_id, a.id, a.parent_id;
+  GROUP BY way_id, a.id, a.parent_id
   ORDER BY way_id
 
 
