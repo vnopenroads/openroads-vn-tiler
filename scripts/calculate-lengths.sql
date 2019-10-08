@@ -1,6 +1,7 @@
 BEGIN;
 
   DROP VIEW vpromm_lengths;
+  DROP MATERIALIZED VIEW ways_admin;
   DROP MATERIALIZED VIEW lines_admin;
   DROP MATERIALIZED VIEW lines;
   DROP MATERIALIZED VIEW points;
