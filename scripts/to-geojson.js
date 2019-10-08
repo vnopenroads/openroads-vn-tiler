@@ -92,7 +92,10 @@ merge(waysAdmin, mergedProperties, toKey)
   if (coordinates) {
     next(null, {
       type: 'Feature',
-      properties: {province, ...properties},
+      properties: Object.assign(
+        { province: province}, 
+        properties
+      ),
       way_id: wayArr[0].way_id,
       geometry: {
         type: 'LineString',
