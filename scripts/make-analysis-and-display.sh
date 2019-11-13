@@ -27,8 +27,10 @@ mkdir -p $WORKDIR/network
 
 # geojson-stream-merge --input $WORKDIR/network.geojson --output $WORKDIR/network-merged.geojson
 
-echo "Adding IRI data to GeoJSON"
-./add-iri-to-geojson.js $WORKDIR/network.geojson $WORKDIR/points.geojson > $WORKDIR/orma-sections.geojson
+# echo "Adding IRI data to GeoJSON"
+# ./add-iri-to-geojson.js $WORKDIR/network.geojson $WORKDIR/points.geojson > $WORKDIR/orma-sections.geojson
+
+cp $WORKDIR/network.geojson $WORKDIR/orma-sections.geojson
 
 echo "Creating CSV for CBA export"
 ./create-cba-export.js $WORKDIR/orma-sections.geojson > $WORKDIR/orma-sections.csv
