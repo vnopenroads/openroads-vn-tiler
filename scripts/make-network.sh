@@ -16,7 +16,7 @@ else
 fi
 
 echo "Converting to GeoJSON"
-./to-geojson.js $WORKDIR/waynodes.csv $WORKDIR/waytags.csv $WORKDIR/road_properties.csv > $WORKDIR/network.geojson
+./to-geojson.js $WORKDIR/waynodes.csv $WORKDIR/waytags.csv $WORKDIR/road_properties.csv $WORKDIR/waysadmin.csv > $WORKDIR/network.geojson
 
 echo "Converting to vector tiles"
 tippecanoe -l network -z 16 -f -P -o $WORKDIR/network.mbtiles $WORKDIR/network.geojson
