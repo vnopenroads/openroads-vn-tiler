@@ -49,7 +49,7 @@ BEGIN;
     LEFT JOIN road_properties AS rp ON rp.id = wt.vpromms_id
     ORDER BY wt.way_id;
 
-  CREATE MATERIALIZED VIEW ways_admin AS
+  CREATE TEMP VIEW ways_admin AS
   SELECT l.way_id, a.id as district, a.parent_id as province
   FROM lines AS l, admin_boundaries AS a
   WHERE ST_Intersects(a.geom, l.geom) AND a.type='district'
