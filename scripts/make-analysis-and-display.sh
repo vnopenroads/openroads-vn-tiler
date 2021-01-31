@@ -35,12 +35,12 @@ cp $WORKDIR/network.geojson $WORKDIR/orma-sections.geojson
 echo "Creating CSV for CBA export"
 ./create-cba-export.js $WORKDIR/orma-sections.geojson > $WORKDIR/orma-sections.csv
 
-echo "Creating CSV for province CBA export"
-./create-cba-export-by-province.js $WORKDIR/orma-sections.csv > "../backup/cba/provinces/orma-sections.csv"
+## echo "Creating CSV for province CBA export"
+## ./create-cba-export-by-province.js $WORKDIR/orma-sections.csv > "../backup/cba/provinces/orma-sections.csv"
 
 # echo "save to local. Note that this needs to be changes to a location accessible by CBA scripts."
-mkdir -p ../backup/cba
-cp "${WORKDIR}/orma-sections.csv" "../backup/cba/orma-sections-$(date +%Y-%m-%d).csv"
+## mkdir -p ../backup/cba
+## cp "${WORKDIR}/orma-sections.csv" "../backup/cba/orma-sections-$(date +%Y-%m-%d).csv"
 
 echo "Creating GeoJSON with extra properties stripped out"
 ./strip-extra-properties.js $WORKDIR/orma-sections.geojson > $WORKDIR/orma-sections-trimmed.geojson
