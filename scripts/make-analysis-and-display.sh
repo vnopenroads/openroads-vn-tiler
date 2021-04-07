@@ -54,6 +54,9 @@ tippecanoe \
     --force --output "$WORKDIR/conflated.mbtiles" \
     "$WORKDIR/orma-sections-trimmed.geojson"
 
+echo "self serve vector tiles"
+cp "$WORKDIR/conflated.mbtiles" "../backup"
+
 export MapboxAccessToken=$MAPBOX_ACCESS_TOKEN
 mapbox-upload \
     "${MAPBOX_ACCOUNT}.vietnam-conflated-1" \
