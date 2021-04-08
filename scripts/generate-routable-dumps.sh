@@ -3,18 +3,13 @@ set -e
 
 echo "Ensure the necessary environment variables are set"
 : "${DATABASE_URL:?}"
-: "${AWS_ACCESS_KEY_ID:?}"
-: "${AWS_SECRET_ACCESS_KEY:?}"
-: "${S3_DUMP_BUCKET:?}"
 
 # Change to submodule's directory
 cd "${0%/*}"
 cd ../Network_Cleaning
 
 echo "Downloading national highways, which aren't tracked in ORMA"
-aws s3 cp \
-    "s3://$S3_DUMP_BUCKET/private-fixture-data/National_network.geojson" \
-    National_network.geojson
+cp "./backup/private-fixture-data/National_network.geojson" National_network.geojson
 
 echo "For each province, generate and upload a routable road dump"
 # For now, just hard-code the fourteen trial provinces
@@ -41,9 +36,7 @@ do
 
         echo "Making network routable"
         python Network_Clean.py
-        aws s3 cp \
-            data/output/Network.csv \
-            "s3://${S3_DUMP_BUCKET}/by-province-id/${province_code}.csv"
+        cp data/output/Network.csv ./backup/by-province-id/${province_code}.csv
     fi
 
     rm target-boundary.geojson

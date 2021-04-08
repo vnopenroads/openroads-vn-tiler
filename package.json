@@ -9,8 +9,8 @@
     "start": "nf start"
   },
   "dependencies": {
-    "@mapbox/geojson-merge": "^1.0.2",
-    "@mapbox/mapbox-tile-copy": "^6.2.1",
+    "@mapbox/geojson-merge": "^1.1.1",
+    "@mapbox/mapbox-tile-copy": "^7.7.0",
     "@turf/buffer": "^5.1.5",
     "@turf/distance": "^4.5.2",
     "@turf/helpers": "^4.5.2",
@@ -29,7 +29,6 @@
     "geojson-stream": "^0.0.1",
     "group-stream": "^3.0.0",
     "lodash": "^4.17.10",
-    "mbtiles": "^0.9.0",
     "networkmatch": "https://github.com/dereklieu/networkmatch.git#master",
     "reproject": "^1.1.1",
     "sorted-merge-stream": "^1.0.1",
@@ -42,6 +41,6 @@
   },
   "devDependencies": {
     "foreman": "^2.0.0",
-    "mbview": "^1.15.1"
+    "mbview": "^2.0.1"
   }
 }

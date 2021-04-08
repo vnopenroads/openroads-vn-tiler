@@ -49,8 +49,16 @@ BEGIN;
     LEFT JOIN road_properties AS rp ON rp.id = wt.vpromms_id
     ORDER BY wt.way_id;
 
+  CREATE TEMP VIEW ways_admin AS
+  SELECT l.way_id, a.id as district, a.parent_id as province
+  FROM lines AS l, admin_boundaries AS a
+  WHERE ST_Intersects(a.geom, l.geom) AND a.type='district'
+  GROUP BY way_id, a.id, a.parent_id
+  ORDER BY way_id;
+
 
 \copy (SELECT * FROM all_waynodes) to .tmp/waynodes.csv CSV HEADER
+\copy (SELECT * FROM ways_admin) to .tmp/waysadmin.csv CSV HEADER
 \copy (SELECT * FROM all_waytags) to .tmp/waytags.csv CSV HEADER
 \copy (SELECT * FROM point_featurecollection) to .tmp/points.geojson
 \copy (SELECT * FROM all_properties) to .tmp/road_properties.csv CSV HEADER
