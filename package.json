@@ -40,7 +40,7 @@
     "wellknown": "^0.5.0"
   },
   "devDependencies": {
-    "foreman": "^2.0.0",
+    "foreman": "^3.0.1",
     "mbview": "^2.0.1"
   }
 }
