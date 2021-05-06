@@ -57,9 +57,9 @@ tippecanoe \
 echo "self serve vector tiles"
 cp "$WORKDIR/conflated.mbtiles" "../backup"
 
-export MapboxAccessToken=$MAPBOX_ACCESS_TOKEN
-mapbox-upload \
-    "${MAPBOX_ACCOUNT}.vietnam-conflated-1" \
-    "$WORKDIR/conflated.mbtiles"
+# export MapboxAccessToken=$MAPBOX_ACCESS_TOKEN
+# mapbox-upload \
+#     "${MAPBOX_ACCOUNT}.vietnam-conflated-1" \
+#     "$WORKDIR/conflated.mbtiles"
 
 echo "Successfully finished"
